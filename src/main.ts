@@ -64,15 +64,39 @@ class Graphics {
     }
 
     public clearCanvas() {
-        this.context.fillStyle = "skyblue";
+        this.context.fillStyle = "white";
         this.context.fillRect(0, 0, canvas.width, canvas.height);
-        this.context.fillStyle = "black";
+        this.context.strokeStyle = "#CCCCCC";
+        this.drawGrid();
+    }
+
+    public drawLine(fromVec: Vector2d, toVec: Vector2d) {
+        this.context.beginPath();
+        this.context.moveTo(fromVec.x, fromVec.y);
+        this.context.lineTo(toVec.x, toVec.y);
+        this.context.stroke();
     }
 
     public drawCircle(x: number, y: number, r: number) {
+        this.context.fillStyle = "black";
         this.context.beginPath();
         this.context.arc(x, y, r, 0, 2 * Math.PI);
         this.context.fill();
+    }
+
+    public drawGrid() {
+        const spacePerLine = 50;
+
+        for (let i = 1; i < this.canvas.height / spacePerLine; i++) {
+            this.drawLine(
+                new Vector2d(spacePerLine * i, 0),
+                new Vector2d(spacePerLine * i, this.canvas.width),
+            );
+            this.drawLine(
+                new Vector2d(0, spacePerLine * i),
+                new Vector2d(this.canvas.height, spacePerLine * i),
+            );
+        }
     }
 }
 

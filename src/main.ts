@@ -39,7 +39,7 @@ class Vector2d {
 }
 
 class CannonBall implements SimulationObject {
-    private pos = new Vector2d(10, 300);
+    private pos = new Vector2d(67.5, 725);
     private mass = 1;
     private velocity = new Vector2d(2, -2);
 
@@ -51,7 +51,7 @@ class CannonBall implements SimulationObject {
     }
 
     public render(graphics: Graphics): void {
-        graphics.drawCircle(this.pos.x, this.pos.y, 20);
+        graphics.drawCircle(this.pos.x, this.pos.y, 10);
     }
 }
 
@@ -68,6 +68,7 @@ class Graphics {
         this.context.fillRect(0, 0, canvas.width, canvas.height);
         this.context.strokeStyle = "#CCCCCC";
         this.drawGrid();
+        this.drawCannon((45 * Math.PI) / 180);
     }
 
     public drawLine(fromVec: Vector2d, toVec: Vector2d) {
@@ -97,6 +98,25 @@ class Graphics {
                 new Vector2d(this.canvas.height, spacePerLine * i),
             );
         }
+    }
+    public drawCannonHalfCircle() {
+        this.context.fillStyle = "black";
+        this.context.beginPath();
+        this.context.arc(50, 750, 16, Math.PI, 2 * Math.PI);
+        this.context.fill();
+    }
+
+    public drawCannonRectangle(angle: number) {
+        this.context.fillStyle = "black";
+        this.context.rotate(angle);
+        this.context.rect(550, 450, 20, 40);
+        this.context.fill();
+        this.context.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    public drawCannon(angle: number) {
+        this.drawCannonHalfCircle();
+        this.drawCannonRectangle(angle);
     }
 }
 

@@ -68,7 +68,7 @@ class Graphics {
         this.context.fillRect(0, 0, canvas.width, canvas.height);
         this.context.strokeStyle = "#CCCCCC";
         this.drawGrid();
-        this.drawCannon((45 * Math.PI) / 180);
+        this.drawCannon((50 * Math.PI) / 180);
     }
 
     public drawLine(fromVec: Vector2d, toVec: Vector2d) {
@@ -107,11 +107,14 @@ class Graphics {
     }
 
     public drawCannonRectangle(angle: number) {
+        this.context.save();
+        this.context.translate(50, 742);
         this.context.fillStyle = "black";
         this.context.rotate(angle);
-        this.context.rect(550, 450, 20, 40);
+        this.context.rect(-10, -40, 20, 40);
         this.context.fill();
         this.context.setTransform(1, 0, 0, 1, 0, 0);
+        this.context.restore();
     }
 
     public drawCannon(angle: number) {

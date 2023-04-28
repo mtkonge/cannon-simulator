@@ -7,7 +7,7 @@ interface SimulationObject {
 }
 
 class Vector2d {
-    constructor(public x: number, public y: number) {}
+    constructor(public x: number, public y: number) { }
 
     public clone() {
         return new Vector2d(this.x, this.y);
@@ -39,7 +39,9 @@ class Vector2d {
 }
 
 class CannonBall implements SimulationObject {
-    private pos = new Vector2d(67.5, 725);
+    //x = cannon_x + Math.sin(angle) * (cannon_base_radius + cannon_length);
+    //y = cannon_y - Math.cos(angle) * (cannon_base_radius + cannon_length);
+    private pos = new Vector2d(50 + Math.sin(45 * Math.PI * (1 / 180)) * (16 + 40), 750 - Math.cos(45 * Math.PI * (1 / 180)) * (16 + 40));
     private mass = 1;
     private velocity = new Vector2d(2, -2);
 
@@ -68,7 +70,7 @@ class Graphics {
         this.context.fillRect(0, 0, canvas.width, canvas.height);
         this.context.strokeStyle = "#CCCCCC";
         this.drawGrid();
-        this.drawCannon((50 * Math.PI) / 180);
+        this.drawCannon((45 * Math.PI) / 180);
     }
 
     public drawLine(fromVec: Vector2d, toVec: Vector2d) {
@@ -108,12 +110,15 @@ class Graphics {
 
     public drawCannonRectangle(angle: number) {
         this.context.save();
-        this.context.translate(50, 742);
+        // we use sin/cos for x/y rather than cos/sin because the square is rotated
+        const x = Math.sin(angle) * 16;
+        const y = Math.cos(angle) * 16;
+        this.context.translate(50 + x, 750 - y);
         this.context.fillStyle = "black";
         this.context.rotate(angle);
         this.context.rect(-10, -40, 20, 40);
+        this.context.arc(0, 0, 10, 0, 2 * Math.PI);
         this.context.fill();
-        this.context.setTransform(1, 0, 0, 1, 0, 0);
         this.context.restore();
     }
 

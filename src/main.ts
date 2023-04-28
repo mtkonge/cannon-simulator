@@ -41,7 +41,7 @@ class Vector2d {
 class CannonBall implements SimulationObject {
     //x = cannon_x + Math.sin(angle) * (cannon_base_radius + cannon_length);
     //y = cannon_y - Math.cos(angle) * (cannon_base_radius + cannon_length);
-    private pos = new Vector2d(50 + Math.sin(45 * Math.PI * (1 / 180)) * (16 + 40), 750 - Math.cos(45 * Math.PI * (1 / 180)) * (16 + 40));
+    private pos = new Vector2d(50 + Math.sin(45 * Math.PI * (1 / 180)) * (16 + 45), 750 - Math.cos(45 * Math.PI * (1 / 180)) * (16 + 45));
     private mass = 1;
     private velocity = new Vector2d(2, -2);
 
@@ -111,8 +111,8 @@ class Graphics {
     public drawCannonRectangle(angle: number) {
         this.context.save();
         // we use sin/cos for x/y rather than cos/sin because the square is rotated
-        const x = Math.sin(angle) * 16;
-        const y = Math.cos(angle) * 16;
+        const x = Math.sin(angle) * 21;
+        const y = Math.cos(angle) * 21;
         this.context.translate(50 + x, 750 - y);
         this.context.fillStyle = "black";
         this.context.rotate(angle);

@@ -28,7 +28,7 @@ function main() {
         ),
     ];
 
-    const loop = (before: number) => {
+    const simulationIteration = (before: number) => {
         const now = Date.now();
         const deltaT = (now - before) / 1000;
 
@@ -39,9 +39,9 @@ function main() {
         for (const simulationObject of simulationObjects)
             simulationObject.render(graphics);
 
-        requestAnimationFrame(() => loop(now));
+        requestAnimationFrame(() => simulationIteration(now));
     };
-    loop(Date.now());
+    simulationIteration(Date.now());
 }
 
 main();

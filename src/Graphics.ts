@@ -34,6 +34,21 @@ export class Graphics {
         const spacePerLine = 50;
 
         for (let i = 1; i < this.canvas.height / spacePerLine; i++) {
+            this.context.font = "20px Arial";
+            this.context.fillStyle = "black";
+            this.context.textAlign = "center";
+            this.context.textBaseline = "middle";
+            this.context.fillText(
+                i.toString(),
+                spacePerLine * i,
+                spacePerLine / 2,
+            );
+            this.context.fillText(
+                i.toString(),
+                spacePerLine / 2,
+                spacePerLine * i,
+            );
+
             this.drawLine(
                 new Vector2d(spacePerLine * i, 0),
                 new Vector2d(spacePerLine * i, this.canvas.width),

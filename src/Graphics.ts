@@ -1,3 +1,4 @@
+import { Radian } from "./Unit";
 import { Vector2d } from "./Vector2d";
 
 export class Graphics {
@@ -69,10 +70,11 @@ export class Graphics {
         this.context.fill();
     }
 
-    public drawCannonBarrel(angle: number, pos: Vector2d) {
+    public drawCannonBarrel(angle: Radian, pos: Vector2d) {
         this.context.save();
         const x = Math.sin(angle) * 21;
         const y = Math.cos(angle) * 21;
+        console.log(x, y);
         this.context.translate(pos.x + x, this.reverseY(pos.y + y));
         this.context.fillStyle = "black";
         this.context.rotate(angle);
@@ -82,7 +84,7 @@ export class Graphics {
         this.context.restore();
     }
 
-    public drawCannon(angle: number, pos: Vector2d) {
+    public drawCannon(angle: Radian, pos: Vector2d) {
         this.drawCannonHalfCircle(pos);
         this.drawCannonBarrel(angle, pos);
     }

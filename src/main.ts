@@ -1,6 +1,7 @@
 import { Cannon } from "./Cannon";
 import { Graphics } from "./Graphics";
 import { Objects } from "./Objects";
+import { degreesToRadians } from "./Unit";
 import { Vector2d } from "./Vector2d";
 import "./style.css";
 
@@ -10,7 +11,7 @@ function main() {
 
     const simulationObjects = new Objects();
     simulationObjects.add(
-        new Cannon(new Vector2d(50, 50), 45, simulationObjects),
+        new Cannon(new Vector2d(50, 50), simulationObjects, degreesToRadians(45)),
     );
     simulationObjects.flushAddQueue();
 

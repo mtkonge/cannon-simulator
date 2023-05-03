@@ -2,6 +2,7 @@ import { Cannonball } from "./Cannonball";
 import { Graphics } from "./Graphics";
 import { ObjectsAdderAndRemover } from "./ObjectAdderAndRemover";
 import { SimulationObject } from "./SimulationObject";
+import { Radian } from "./Unit";
 import { Vector2d } from "./Vector2d";
 
 export class Cannon implements SimulationObject {
@@ -11,17 +12,17 @@ export class Cannon implements SimulationObject {
 
     constructor(
         private pos: Vector2d,
-        private angle: number,
         private objects: ObjectsAdderAndRemover,
+        private angle: Radian,
     ) {
         this.buttonListener = () => this.shoot();
         this.button.addEventListener("click", this.buttonListener);
     }
 
-    update(deltaT: number): void {}
+    update(_deltaT: number): void { }
 
     render(graphics: Graphics): void {
-        graphics.drawCannon((this.angle * Math.PI) / 180, this.pos);
+        graphics.drawCannon(this.angle, this.pos);
     }
 
     destructor(): void {
@@ -40,14 +41,13 @@ export class Cannon implements SimulationObject {
 
     private cannonballStartPosition(
         { x, y }: Vector2d,
-        angle: number,
+        angle: Radian,
         baseRadius: number,
         barrelLength: number,
     ) {
-        const radian = angle * Math.PI * (1 / 180);
         return new Vector2d(
-            x + Math.sin(radian) * (baseRadius + barrelLength),
-            y + Math.cos(radian) * (baseRadius + barrelLength),
+            x + Math.sin(angle) * (baseRadius + barrelLength),
+            y + Math.cos(angle) * (baseRadius + barrelLength),
         );
     }
 }

@@ -1,5 +1,6 @@
 import { Graphics } from "./Graphics";
 import { SimulationObject } from "./SimulationObject";
+import { Radian } from "./Unit";
 import { Vector2d } from "./Vector2d";
 
 export class Cannonball implements SimulationObject {
@@ -7,7 +8,7 @@ export class Cannonball implements SimulationObject {
 
     private velocity: Vector2d;
 
-    constructor(private pos: Vector2d, angle: number, force: number) {
+    constructor(private pos: Vector2d, angle: Radian, force: number) {
         this.velocity = new Vector2d(
             Math.sin(angle) * force,
             Math.cos(angle) * force,

@@ -20,10 +20,10 @@ export class Graphics {
         this.drawGrid();
     }
 
-    public drawLine(fromVec: Vector2d, toVec: Vector2d) {
+    public drawLine(fromPos: Vector2d, toPos: Vector2d) {
         this.context.beginPath();
-        this.context.moveTo(fromVec.x, this.reverseY(fromVec.y));
-        this.context.lineTo(toVec.x, this.reverseY(toVec.y));
+        this.context.moveTo(fromPos.x, this.reverseY(fromPos.y));
+        this.context.lineTo(toPos.x, this.reverseY(toPos.y));
         this.context.stroke();
     }
 

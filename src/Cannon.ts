@@ -33,7 +33,7 @@ export class Cannon implements SimulationObject {
     private shoot() {
         this.objects.add(
             new Cannonball(
-                this.cannonballStartPosition(this.pos, this.profile.angle(), 0, this.profile.barrelLength()),
+                this.cannonballStartPosition(this.pos, this.profile.angle(), this.profile.barrelLength()),
                 this.profile.angle(),
                 6,
             ),
@@ -43,12 +43,11 @@ export class Cannon implements SimulationObject {
     private cannonballStartPosition(
         { x, y }: Vector2d,
         angle: Radians,
-        wheelRadius: number,
         barrelLength: number,
     ) {
         return new Vector2d(
-            x + Math.sin(angle) * (wheelRadius + barrelLength),
-            y + Math.cos(angle) * (wheelRadius + barrelLength),
+            x + Math.sin(angle) * barrelLength,
+            y + Math.cos(angle) * barrelLength,
         );
     }
 }

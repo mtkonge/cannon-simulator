@@ -67,7 +67,6 @@ export class Graphics {
         const wheelRadius = profile.wheelRadius();
 
         this.context.save();
-        this.context.strokeStyle = "#634133";
         this.context.fillStyle = "#9F5C41";
         this.context.lineWidth = 4;
         this.context.translate(pos.x, this.reverseY(pos.y));
@@ -79,6 +78,7 @@ export class Graphics {
             this.context.fill();
         }
 
+        this.context.strokeStyle = "#634133";
         this.context.beginPath();
         this.context.arc(0, 0, wheelRadius, 0, 2 * Math.PI);
         this.context.stroke();

@@ -1,4 +1,4 @@
-import { Radian } from "./Unit";
+import { Radian } from "./units";
 import { Vector2d } from "./Vector2d";
 
 export class Graphics {

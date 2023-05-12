@@ -2,7 +2,7 @@ import { Cannonball } from "./Cannonball";
 import { Graphics } from "./Graphics";
 import { ObjectsAdderAndRemover } from "./ObjectAdderAndRemover";
 import { SimulationObject } from "./SimulationObject";
-import { Radian } from "./Unit";
+import { Radian } from "./units";
 import { Vector2d } from "./Vector2d";
 
 export class Cannon implements SimulationObject {

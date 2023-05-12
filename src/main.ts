@@ -1,7 +1,7 @@
 import { Cannon } from "./Cannon";
 import { Graphics } from "./Graphics";
 import { Objects } from "./Objects";
-import { degreesToRadians } from "./Unit";
+import { degreesToRadians } from "./units";
 import { Vector2d } from "./Vector2d";
 import "./style.css";
 

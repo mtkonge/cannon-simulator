@@ -1,7 +1,8 @@
 import { Graphics } from "./Graphics";
 import { SimulationObject } from "./SimulationObject";
-import { Radian } from "./Unit";
+import { Radian } from "./units";
 import { Vector2d } from "./Vector2d";
+import { acceleration, gravityForce } from "./physics";
 
 export class Cannonball implements SimulationObject {
     private mass = 1;
@@ -16,9 +17,7 @@ export class Cannonball implements SimulationObject {
     }
 
     public update(deltaT: number): void {
-        const gravityForce = new Vector2d(0, -9.82 * this.mass);
-        const acceleration = gravityForce.clone().divideComponents(this.mass);
-        this.velocity.add(acceleration.clone().extend(deltaT));
+        this.velocity.add(acceleration([gravityForce(this.mass)], this.mass).extend(deltaT));
         this.pos.add(this.velocity);
     }
 

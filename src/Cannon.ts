@@ -1,8 +1,9 @@
+import { CannonProfile } from "./CannonProfile";
 import { Cannonball } from "./Cannonball";
 import { Graphics } from "./Graphics";
 import { ObjectsAdderAndRemover } from "./ObjectAdderAndRemover";
 import { SimulationObject } from "./SimulationObject";
-import { Radian } from "./units";
+import { Radians } from "./units";
 import { Vector2d } from "./Vector2d";
 
 export class Cannon implements SimulationObject {
@@ -13,7 +14,7 @@ export class Cannon implements SimulationObject {
     constructor(
         private pos: Vector2d,
         private objects: ObjectsAdderAndRemover,
-        private angle: Radian,
+        private profile: CannonProfile,
     ) {
         this.buttonListener = () => this.shoot();
         this.button.addEventListener("click", this.buttonListener);
@@ -22,7 +23,7 @@ export class Cannon implements SimulationObject {
     update(_deltaT: number): void { }
 
     render(graphics: Graphics): void {
-        graphics.drawCannon(this.angle, this.pos);
+        graphics.drawCannon(this.pos, this.profile);
     }
 
     destructor(): void {
@@ -32,8 +33,8 @@ export class Cannon implements SimulationObject {
     private shoot() {
         this.objects.add(
             new Cannonball(
-                this.cannonballStartPosition(this.pos, this.angle, 16, 40),
-                this.angle,
+                this.cannonballStartPosition(this.pos, this.profile.angle(), 0, this.profile.barrelLength()),
+                this.profile.angle(),
                 6,
             ),
         );
@@ -41,13 +42,13 @@ export class Cannon implements SimulationObject {
 
     private cannonballStartPosition(
         { x, y }: Vector2d,
-        angle: Radian,
-        baseRadius: number,
+        angle: Radians,
+        wheelRadius: number,
         barrelLength: number,
     ) {
         return new Vector2d(
-            x + Math.sin(angle) * (baseRadius + barrelLength),
-            y + Math.cos(angle) * (baseRadius + barrelLength),
+            x + Math.sin(angle) * (wheelRadius + barrelLength),
+            y + Math.cos(angle) * (wheelRadius + barrelLength),
         );
     }
 }

@@ -1,7 +1,7 @@
 import { Cannon } from "./Cannon";
+import { ExperimentCannonProfile } from "./ExperimentCannonProfile";
 import { Graphics } from "./Graphics";
 import { Objects } from "./Objects";
-import { degreesToRadians } from "./units";
 import { Vector2d } from "./Vector2d";
 import "./style.css";
 
@@ -9,9 +9,11 @@ function main() {
     const graphics = new Graphics();
     graphics.clearCanvas();
 
+    const profile = new ExperimentCannonProfile();
+
     const simulationObjects = new Objects();
     simulationObjects.add(
-        new Cannon(new Vector2d(50, 50), simulationObjects, degreesToRadians(45)),
+        new Cannon(new Vector2d(50, 50), simulationObjects, profile),
     );
     simulationObjects.flushAddQueue();
 

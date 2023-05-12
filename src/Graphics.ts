@@ -1,4 +1,4 @@
-import { Radian } from "./units";
+import { CannonProfile } from "./CannonProfile";
 import { Vector2d } from "./Vector2d";
 
 export class Graphics {
@@ -63,29 +63,52 @@ export class Graphics {
             );
         }
     }
-    public drawCannonHalfCircle(pos: Vector2d) {
-        this.context.fillStyle = "black";
+    public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {
+        const wheelRadius = profile.wheelRadius();
+
+        this.context.save();
+        this.context.strokeStyle = "#634133";
+        this.context.fillStyle = "#9F5C41";
+        this.context.lineWidth = 4;
+        this.context.translate(pos.x, this.reverseY(pos.y));
+
+        for (let i = 0; i < 4; i++) {
+            this.context.beginPath()
+            this.context.rect(-wheelRadius, -2, wheelRadius * 2, 4);
+            this.context.rotate(Math.PI * 0.25);
+            this.context.fill();
+        }
+
         this.context.beginPath();
-        this.context.arc(pos.x, this.reverseY(pos.y), 16, Math.PI, 2 * Math.PI);
+        this.context.arc(0, 0, wheelRadius, 0, 2 * Math.PI);
+        this.context.stroke();
+
+        this.context.fillStyle = "#634133";
+        this.context.beginPath();
+        this.context.arc(0, 0, wheelRadius * 0.33, 0, 2 * Math.PI);
         this.context.fill();
+
+
+        this.context.restore();
     }
 
-    public drawCannonBarrel(angle: Radian, pos: Vector2d) {
+    public drawCannonBarrel(profile: CannonProfile, pos: Vector2d) {
+        const angle = profile.angle();
+        const barrelLength = profile.barrelLength();
+        const barrelWidth = profile.barrelWidth();
         this.context.save();
-        const x = Math.sin(angle) * 21;
-        const y = Math.cos(angle) * 21;
-        console.log(x, y);
-        this.context.translate(pos.x + x, this.reverseY(pos.y + y));
+        this.context.beginPath();
         this.context.fillStyle = "black";
+        this.context.translate(pos.x, this.reverseY(pos.y));
         this.context.rotate(angle);
-        this.context.rect(-10, -40, 20, 40);
+        this.context.rect(-barrelWidth * 0.5, -barrelLength, barrelWidth, barrelLength);
         this.context.arc(0, 0, 10, Math.PI - 0, Math.PI - 2 * Math.PI);
         this.context.fill();
         this.context.restore();
     }
 
-    public drawCannon(angle: Radian, pos: Vector2d) {
-        this.drawCannonHalfCircle(pos);
-        this.drawCannonBarrel(angle, pos);
+    public drawCannon(pos: Vector2d, cannonProfile: CannonProfile) {
+        this.drawCannonBarrel(cannonProfile, pos);
+        this.drawCannonWheel(cannonProfile, pos);
     }
 }

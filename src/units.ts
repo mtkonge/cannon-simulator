@@ -1,11 +1,21 @@
+
+/** ° */
 export type Degrees = number;
+/** rad */
 export type Radians = number;
+/** m */
 export type Meters = number;
+/** m^2 */
 export type Meters2 = number;
+/** m^3 */
 export type Meters3 = number;
+/** s */
 export type Seconds = number;
+/** kg / s */
 export type MetersPerSeconds = number;
-export type KilosPerMeters3 = number;
+/** kg / m^3 */
+export type KilogramPerMeters3 = number;
+/** N */
 export type Newton = number;
 
 export function degreesToRadians(number: Degrees): Radians {

@@ -1,15 +1,16 @@
 import { Vector2d } from "./Vector2d";
-import { KilosPerMeters3, Meters2, MetersPerSeconds, Newton } from "./units";
+import { KilogramPerMeters3, Meters2, MetersPerSeconds, Newton } from "./units";
 
 export function sphereCrossSectionalArea(radius: number) {
     return Math.PI * radius ** 2;
 }
 
 export const sphereDragCoefficient = 0.5;
-// approximate air density at 0c
-export const airDensity = 1.3 as KilosPerMeters3;
 
-export function dragForce(dragCoefficient: number, fluidDensity: KilosPerMeters3, area: Meters2, deltaVelocity: Vector2d<MetersPerSeconds>): Vector2d<Newton> {
+/** approximate air density at 0c */
+export const airDensity = 1.3 as KilogramPerMeters3;
+
+export function dragForce(dragCoefficient: number, fluidDensity: KilogramPerMeters3, area: Meters2, deltaVelocity: Vector2d<MetersPerSeconds>): Vector2d<Newton> {
     return deltaVelocity.clone().raiseComponents(2).extend(-0.5 * dragCoefficient * fluidDensity * area);
 }
 

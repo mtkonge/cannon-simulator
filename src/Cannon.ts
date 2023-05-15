@@ -38,7 +38,7 @@ export class Cannon implements SimulationObject {
             new Cannonball(
                 this.cannonballStartPosition(this.pos, this.profile.angle(), this.profile.barrelLength()),
                 this.profile.angle(),
-                6,
+                10,
             ),
         );
     }

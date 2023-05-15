@@ -1,11 +1,17 @@
-export class Vector2d {
-    constructor(public x: number, public y: number) {}
+export class Vector2d<T extends number = number> {
+    constructor(public x: number, public y: number) { }
 
     public clone() {
-        return new Vector2d(this.x, this.y);
+        return new Vector2d<T>(this.x, this.y);
     }
 
-    public multiply(other: Vector2d) {
+    public add(other: Vector2d<T>) {
+        this.x += other.x;
+        this.y += other.y;
+        return this;
+    }
+
+    public multiply(other: Vector2d<T>) {
         this.x *= other.x;
         this.y *= other.y;
         return this;
@@ -23,9 +29,9 @@ export class Vector2d {
         return this;
     }
 
-    public add(other: Vector2d) {
-        this.x += other.x;
-        this.y += other.y;
+    public raiseComponents(exponent: number) {
+        this.x ** exponent;
+        this.y ** exponent;
         return this;
     }
 }

@@ -24,6 +24,9 @@ export class Cannon implements SimulationObject {
 
     render(graphics: Graphics): void {
         graphics.drawCannon(this.pos, this.profile);
+        const startPosition =
+            this.cannonballStartPosition(this.pos, this.profile.angle(), this.profile.barrelLength());
+        graphics.drawCircle(startPosition.x, startPosition.y, 5, "red");
     }
 
     destructor(): void {

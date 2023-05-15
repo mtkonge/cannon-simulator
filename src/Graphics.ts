@@ -7,9 +7,18 @@ export class Graphics {
     private scalingFactor = 1;
     private offset: Vector2d = new Vector2d(0, 0);
 
+    private keys: { [key: string]: boolean } = {};
+
     constructor() {
         this.canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
         this.context = this.canvas.getContext("2d")!;
+
+        document.addEventListener("keydown", (e) => {
+            this.keys[e.key] = true;
+        })
+        document.addEventListener("keyup", (e) => {
+            this.keys[e.key] = false;
+        })
     }
 
     private reverseY(value: number) {
@@ -53,32 +62,70 @@ export class Graphics {
         this.context.fill();
     }
 
-    private drawVerticalGridline(spacePerLine: number, idx: number, offsetX: number) {
+    private drawYAxisGridLine(spacePerLine: number, idx: number, offsetX: number) {
         this.drawLine(
             new Vector2d(spacePerLine * idx + offsetX, 0),
             new Vector2d(spacePerLine * idx + offsetX, this.canvas.height),
         );
     }
 
-    private drawHorizontalGridLine(spacePerLine: number, idx: number, offsetY: number) {
+    private drawXAxisGridLine(spacePerLine: number, idx: number, offsetY: number) {
         this.drawLine(
             new Vector2d(0, spacePerLine * idx + offsetY),
             new Vector2d(this.canvas.width, spacePerLine * idx + offsetY),
         );
     }
 
+    private drawXAxisText(idx: number, spacePerLine: number, offsetX: number, offsetY: number) {
+        let numberOffset = Math.floor(this.offset.x / spacePerLine);
+        if (this.offset.x < 0 && this.offset.x % spacePerLine !== 0) {
+            numberOffset += 1;
+        }
+        this.context.fillText(
+            (idx - numberOffset).toString(),
+            spacePerLine * idx + offsetX,
+            this.reverseY(spacePerLine / 2 - offsetY),
+        );
+    }
+
+    private drawYAxisText(idx: number, spacePerLine: number, offsetX: number, offsetY: number) {
+        let numberOffset = Math.ceil(this.offset.y / spacePerLine);
+        if (this.offset.y > 0 && this.offset.y % spacePerLine !== 0) {
+            numberOffset -= 1;
+        }
+        this.context.fillText(
+            (idx + numberOffset).toString(),
+            spacePerLine / 2 + offsetX - offsetX,
+            this.reverseY(spacePerLine * idx - offsetY),
+        );
+    }
+
     public drawGrid() {
+
+        if (this.keys["w"]) {
+            this.offset.y -= 2;
+        }
+        if (this.keys["s"]) {
+            this.offset.y += 2;
+        }
+        if (this.keys["a"]) {
+            this.offset.x += 2;
+        }
+        if (this.keys["d"]) {
+            this.offset.x -= 2;
+        }
+
         // TODO: make spacePerLine customizable or autoscale idk
         const spacePerLine = this.scale(50);
         const offsetX = this.offset.x % spacePerLine;
         const offsetY = this.offset.y % spacePerLine;
 
-        this.drawVerticalGridline(spacePerLine, 0, offsetX);
-        this.drawHorizontalGridLine(spacePerLine, 0, offsetY);
+        this.drawYAxisGridLine(spacePerLine, 0, offsetX);
+        this.drawXAxisGridLine(spacePerLine, 0, offsetY);
 
         for (let i = 0; i <= this.canvas.height / spacePerLine; i++) {
-            this.drawVerticalGridline(spacePerLine, i, offsetX);
-            this.drawHorizontalGridLine(spacePerLine, i, offsetY);
+            this.drawYAxisGridLine(spacePerLine, i, offsetX);
+            this.drawXAxisGridLine(spacePerLine, i, offsetY);
         }
 
         this.context.font = "20px Arial";
@@ -86,22 +133,10 @@ export class Graphics {
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
 
-        for (let i = -this.canvas.width / spacePerLine; i <= this.canvas.width / spacePerLine; i++) {
-            const numberOffset = Math.floor(this.offset.x / spacePerLine);
-            this.context.fillText(
-                (i - numberOffset).toString(),
-                spacePerLine * i + offsetX,
-                this.reverseY(spacePerLine / 2 - offsetY),
-            );
-        }
 
-        for (let i = -this.canvas.width / spacePerLine; i <= this.canvas.width / spacePerLine; i++) {
-            const numberOffset = Math.ceil(this.offset.y / spacePerLine);
-            this.context.fillText(
-                (i + numberOffset).toString(),
-                spacePerLine / 2 + offsetX,
-                this.reverseY(spacePerLine * i - offsetY),
-            );
+        for (let i = 0; i <= this.canvas.width / spacePerLine; i++) {
+            this.drawXAxisText(i, spacePerLine, offsetX, offsetY);
+            this.drawYAxisText(i, spacePerLine, offsetX, offsetY);
         }
     }
     public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {

@@ -12,6 +12,8 @@ export class ExperimentCannonProfile implements CannonProfile {
         return 50;
     }
     angle(): Radians {
-        return degreesToRadians(45);
+        const angleInput =
+            document.querySelector<HTMLInputElement>("#cannon-angle")!;
+        return degreesToRadians(parseInt(angleInput.value));
     }
 }

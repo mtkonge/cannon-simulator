@@ -9,6 +9,8 @@ import { Vector2d } from "./Vector2d";
 export class Cannon implements SimulationObject {
     private button =
         document.querySelector<HTMLButtonElement>("#shoot-cannon")!;
+    private startSpeedInput =
+        document.querySelector<HTMLInputElement>("#cannon-speed")!;
     private buttonListener: () => any;
 
     constructor(
@@ -33,12 +35,24 @@ export class Cannon implements SimulationObject {
         this.button.removeEventListener("click", this.buttonListener);
     }
 
+    private startSpeed(): number | null {
+        try {
+            return parseInt(this.startSpeedInput.value);
+        } catch {
+            return null;
+        }
+    }
+
     private shoot() {
+        const startSpeed = this.startSpeed();
+        if (!startSpeed) {
+            return;
+        }
         this.objects.add(
             new Cannonball(
                 this.cannonballStartPosition(this.pos, this.profile.angle(), this.profile.barrelLength()),
                 this.profile.angle(),
-                10,
+                startSpeed,
             ),
         );
     }

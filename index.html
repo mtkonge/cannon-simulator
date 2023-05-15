@@ -12,7 +12,12 @@
   <canvas id="canvas" width="800" height="800">
 
   </canvas>
-  <button id="shoot-cannon">Shoot cannon!</button>
+  <div class="input-container">
+    <button id="shoot-cannon">Skyd kannon!</button>
+    <label><input id="cannon-speed" value="10"> Starthastighed [m/s]</label>
+    <label><input id="cannon-angle" type="range" min="0" max="360" value="45"> Vinkel af kanon</label>
+    <p>WASD til at flytte kameraet</p>
+  </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
 

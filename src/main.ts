@@ -1,4 +1,5 @@
 import { Cannon } from "./Cannon";
+import { CanvasInput } from "./CanvasInput";
 import { ExperimentCannonProfile } from "./ExperimentCannonProfile";
 import { Graphics } from "./Graphics";
 import { Objects } from "./Objects";
@@ -6,7 +7,10 @@ import { Vector2d } from "./Vector2d";
 import "./style.css";
 
 function main() {
-    const graphics = new Graphics();
+    const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
+
+    const input = new CanvasInput(canvas);
+    const graphics = new Graphics(input);
     graphics.clear();
 
     const profile = new ExperimentCannonProfile();
@@ -23,9 +27,14 @@ function main() {
 
         simulationObjects.update(deltaT);
 
+        graphics.transformation().update();
+
         graphics.clear();
         graphics.grid();
         simulationObjects.render(graphics);
+
+        input.resetDrag();
+        input.resetScroll();
 
         requestAnimationFrame(() => simulationIteration(now));
     };

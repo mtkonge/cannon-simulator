@@ -1,4 +1,5 @@
 import { CannonProfile } from "./CannonProfile";
+import { Input } from "./Input";
 import { Transformation } from "./Transformation";
 import { Vector2d, v2 } from "./Vector2d";
 import { Ref } from "./utils";
@@ -8,10 +9,10 @@ export class Graphics {
     private context: CanvasRenderingContext2D;
     private transformation_: Transformation;
 
-    public constructor() {
+    public constructor(input: Input) {
         this.canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
         this.context = this.canvas.getContext("2d")!;
-        this.transformation_ = new Transformation(this.canvas.height);
+        this.transformation_ = new Transformation(this.canvas.height, input);
     }
 
     public transformation(): Ref<Transformation> {
@@ -28,8 +29,8 @@ export class Graphics {
 
     public line(fromPos: Vector2d, toPos: Vector2d) {
         this.context.beginPath();
-        this.context.moveTo(fromPos.x, (fromPos.y));
-        this.context.lineTo(toPos.x, (toPos.y));
+        this.context.moveTo(fromPos.x, fromPos.y);
+        this.context.lineTo(toPos.x, toPos.y);
         this.context.stroke();
     }
 
@@ -48,7 +49,32 @@ export class Graphics {
 
     public grid() {
         this.context.lineWidth = 3;
-        this.line(v2(0, 0), v2(0, 0))
+        this.line(v2(0, 0), v2(0, 0));
+        for (let i = 0; i < 20; i++) {
+            //     this.context.beginPath();
+            // this.context.moveTo(fromPos.x, fromPos.y);
+            // this.context.lineTo(toPos.x, toPos.y);
+            // this.context.stroke();
+            this.line(
+                new Vector2d(
+                    this.transformation_.screenToSimulationX(50 * i),
+                    0,
+                ),
+                new Vector2d(
+                    this.transformation_.screenToSimulationX(50 * i),
+                    this.transformation_.screenToSimulationY(
+                        this.canvas.height,
+                    ),
+                ),
+            );
+            this.line(
+                new Vector2d(0, 50 * i),
+                new Vector2d(
+                    this.transformation_.screenToSimulationX(this.canvas.width),
+                    50 * i,
+                ),
+            );
+        }
     }
 
     public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {
@@ -59,7 +85,7 @@ export class Graphics {
         this.context.lineWidth = 4;
         this.context.translate(this.x(pos.x), this.y(pos.y));
 
-        this.context.beginPath()
+        this.context.beginPath();
         for (let i = 0; i < 4; i++) {
             this.context.rect(-wheelRadius, -2, wheelRadius * 2, 4);
             this.context.rotate(Math.PI * 0.25);
@@ -88,7 +114,12 @@ export class Graphics {
         this.context.fillStyle = "black";
         this.context.translate(this.x(pos.x), this.y(pos.y));
         this.context.rotate(angle);
-        this.context.rect(-barrelWidth * 0.5, -barrelLength, barrelWidth, barrelLength);
+        this.context.rect(
+            -barrelWidth * 0.5,
+            -barrelLength,
+            barrelWidth,
+            barrelLength,
+        );
         this.context.arc(0, 0, 10, Math.PI - 0, Math.PI - 2 * Math.PI);
         this.context.fill();
         this.context.restore();

@@ -7,7 +7,7 @@ import "./style.css";
 
 function main() {
     const graphics = new Graphics();
-    graphics.clearCanvas();
+    graphics.clear();
 
     const profile = new ExperimentCannonProfile();
 
@@ -23,7 +23,8 @@ function main() {
 
         simulationObjects.update(deltaT);
 
-        graphics.clearCanvas();
+        graphics.clear();
+        graphics.grid();
         simulationObjects.render(graphics);
 
         requestAnimationFrame(() => simulationIteration(now));

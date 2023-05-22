@@ -35,3 +35,6 @@ export class Vector2d<T extends number = number> {
         return this;
     }
 }
+
+export const v2 = (x: number, y: number): Vector2d => new Vector2d(x, y);
+

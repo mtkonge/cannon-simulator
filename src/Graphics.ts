@@ -27,14 +27,14 @@ export class Graphics {
         return this.transformation_.simulationToScreenY(value);
     }
 
-    public line(fromPos: Vector2d, toPos: Vector2d) {
+    public drawLine(fromPos: Vector2d, toPos: Vector2d) {
         this.context.beginPath();
         this.context.moveTo(fromPos.x, fromPos.y);
         this.context.lineTo(toPos.x, toPos.y);
         this.context.stroke();
     }
 
-    public circle(x: number, y: number, radius: number, fillStyle?: string) {
+    public drawCircle(x: number, y: number, radius: number, fillStyle?: string) {
         this.context.fillStyle = fillStyle ?? "black";
         this.context.beginPath();
         this.context.arc(this.x(x), this.y(y), radius, 0, 2 * Math.PI);
@@ -44,37 +44,44 @@ export class Graphics {
     public clear() {
         this.context.fillStyle = "white";
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.strokeStyle = "#CCCCCC";
+        this.context.strokeStyle = "#ccc";
     }
 
-    public grid() {
-        this.context.lineWidth = 3;
-        this.line(v2(0, 0), v2(0, 0));
-        for (let i = 0; i < 20; i++) {
-            //     this.context.beginPath();
-            // this.context.moveTo(fromPos.x, fromPos.y);
-            // this.context.lineTo(toPos.x, toPos.y);
-            // this.context.stroke();
-            this.line(
-                new Vector2d(
-                    this.transformation_.screenToSimulationX(50 * i),
-                    0,
-                ),
-                new Vector2d(
-                    this.transformation_.screenToSimulationX(50 * i),
-                    this.transformation_.screenToSimulationY(
-                        this.canvas.height,
-                    ),
-                ),
-            );
-            this.line(
-                new Vector2d(0, 50 * i),
-                new Vector2d(
-                    this.transformation_.screenToSimulationX(this.canvas.width),
-                    50 * i,
-                ),
-            );
+    public drawGrid() {
+        const { x: offsetX, y: offsetY } = this.transformation_.translation;
+        const spacing = 50 / this.transformation_.scale;
+        this.drawLine(v2(0, 0), v2(0, 0));
+        const correctionX = Math.floor(offsetX / spacing);
+        const correctionY = Math.floor(offsetY / spacing);
+
+        const gridLines = new Array(20).fill(0).map<[number, number]>((_v, i) => [spacing * (i + correctionX) - offsetX, spacing * (i - correctionY) + offsetY])
+        this.drawRawGridLines(gridLines);
+        const zeroLines: [number, number] = [-offsetX, this.canvas.height - 1 + offsetY]
+        this.drawRawGridZeroLines(...zeroLines)
+    }
+
+    private drawRawGridLines(rawGridLines: [number, number][]) {
+        this.context.lineWidth = 1;
+        this.context.strokeStyle = "#ccc";
+        this.context.beginPath();
+        for (const [ix, iy] of rawGridLines) {
+            this.context.moveTo(ix, 0);
+            this.context.lineTo(ix, this.canvas.height);
+            this.context.moveTo(0, iy);
+            this.context.lineTo(this.canvas.width, iy);
         }
+        this.context.stroke();
+    }
+
+    private drawRawGridZeroLines(zx: number, zy: number) {
+        this.context.lineWidth = 2;
+        this.context.strokeStyle = "#000";
+        this.context.beginPath();
+        this.context.moveTo(zx, 0);
+        this.context.lineTo(zx, this.canvas.height);
+        this.context.moveTo(0, zy);
+        this.context.lineTo(this.canvas.width, zy);
+        this.context.stroke();
     }
 
     public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {

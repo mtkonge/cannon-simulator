@@ -30,7 +30,7 @@ function main() {
         graphics.transformation().update();
 
         graphics.clear();
-        graphics.grid();
+        graphics.drawGrid();
         simulationObjects.render(graphics);
 
         input.resetDrag();

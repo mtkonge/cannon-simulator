@@ -2,10 +2,10 @@ import { Input } from "./Input";
 import { Vector2d } from "./Vector2d";
 
 export class Transformation {
-    private translation = new Vector2d(0, 0);
-    private scale = 1;
+    public translation = new Vector2d(0, 0);
+    public scale = 1;
 
-    public constructor(private canvasHeight: number, private input: Input) {}
+    public constructor(private canvasHeight: number, private input: Input) { }
 
     public update() {
         if (this.input.isDragging()) {

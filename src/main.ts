@@ -3,7 +3,7 @@ import { CanvasInput } from "./CanvasInput";
 import { ExperimentCannonProfile } from "./ExperimentCannonProfile";
 import { Graphics } from "./Graphics";
 import { Objects } from "./Objects";
-import { Vector2d } from "./Vector2d";
+import { Vector2d, v2 } from "./Vector2d";
 import "./style.css";
 
 function main() {
@@ -16,9 +16,9 @@ function main() {
     const profile = new ExperimentCannonProfile();
 
     const simulationObjects = new Objects();
-    simulationObjects.add(
-        new Cannon(new Vector2d(50, 50), simulationObjects, profile),
-    );
+    // simulationObjects.add(
+    //     new Cannon(new Vector2d(50, 50), simulationObjects, profile),
+    // );
     simulationObjects.flushAddQueue();
 
     const simulationIteration = (before: number) => {
@@ -31,6 +31,7 @@ function main() {
 
         graphics.clear();
         graphics.drawGrid();
+        graphics.drawPixelsPerMeterScale(v2(400, 750));
         simulationObjects.render(graphics);
 
         input.resetDrag();

@@ -54,12 +54,12 @@ export class Graphics {
         const correctionX = Math.floor(offsetX / spacing);
         const correctionY = Math.floor(offsetY / spacing);
 
+        const zeroLines: [number, number] = [-offsetX, this.canvas.height - 1 + offsetY]
         const gridLines = new Array(20).fill(0).map<[number, number]>((_v, i) => [
             spacing * (i + correctionX) - offsetX
             , spacing * (i - correctionY) + offsetY,
         ]);
         this.drawRawGridLines(gridLines);
-        const zeroLines: [number, number] = [-offsetX, this.canvas.height - 1 + offsetY]
         this.drawRawGridZeroLines(...zeroLines)
         this.drawRawGridNumbers(zeroLines, gridLines);
     }
@@ -98,10 +98,34 @@ export class Graphics {
         const textPaddingY = 10;
 
         for (const [x, y] of rawGridLines) {
-            this.context.fillText((x + this.transformation_.translation.x).toString(), x, clamp(zy - textPaddingY, textPaddingY, this.canvas.height - textPaddingY))
-            this.context.fillText((this.canvas.height - y + this.transformation_.translation.y).toString(), clamp(zx + textPaddingX, textPaddingX, this.canvas.width - textPaddingX), y)
+            this.context.fillText((x + this.transformation_.translation.x).toPrecision(4), x, clamp(zy - textPaddingY, textPaddingY, this.canvas.height - textPaddingY))
+            this.context.fillText((this.canvas.height - y + this.transformation_.translation.y).toPrecision(4), clamp(zx + textPaddingX, textPaddingX, this.canvas.width - textPaddingX), y)
         }
 
+    }
+
+    public drawPixelsPerMeterScale(pos: Vector2d) {
+        const height = 10;
+
+        const x0 = pos.x;
+        const x1 = pos.x + this.transformation_.pixelsPerMeter();
+        const y0 = pos.y;
+        const y1 = pos.y - height
+
+        this.context.strokeStyle = "#000"
+        this.context.lineWidth = 3;
+        this.context.beginPath();
+        this.context.moveTo(x0, y1);
+        this.context.lineTo(x0, y0);
+        this.context.lineTo(x1, y0)
+        this.context.lineTo(x1, y1);
+        this.context.stroke();
+
+        this.context.font = "20px Arial";
+        this.context.fillStyle = "black";
+        this.context.textAlign = "center";
+        this.context.textBaseline = "middle";
+        this.context.fillText("1 Meter", (x0 + x1) / 2, y1 - 10)
     }
 
     public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {

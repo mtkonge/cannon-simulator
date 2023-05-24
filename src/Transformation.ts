@@ -5,6 +5,8 @@ export class Transformation {
     public translation = new Vector2d(0, 0);
     public scale = 1;
 
+    private readonly initialPixelsPerMeter = 100;
+
     public constructor(private canvasHeight: number, private input: Input) { }
 
     public update() {
@@ -19,6 +21,10 @@ export class Transformation {
                 this.scale /= 1.05;
             }
         }
+    }
+
+    public pixelsPerMeter(): number {
+        return this.initialPixelsPerMeter / this.scale;
     }
 
     public simulationToScreenX(value: number): number {

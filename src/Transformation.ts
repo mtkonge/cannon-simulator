@@ -14,9 +14,9 @@ export class Transformation {
         if (this.input.scrolled()) {
             const scroll = this.input.scrolled();
             if (scroll > 0) {
-                this.scale *= 2;
+                this.scale *= 1.05;
             } else if (scroll < 0) {
-                this.scale *= 0.5;
+                this.scale /= 1.05;
             }
         }
     }

@@ -2,7 +2,7 @@ import { CannonProfile } from "./CannonProfile";
 import { Input } from "./Input";
 import { Transformation } from "./Transformation";
 import { Vector2d, v2 } from "./Vector2d";
-import { Ref } from "./utils";
+import { Ref, clamp } from "./utils";
 
 export class Graphics {
     private canvas: HTMLCanvasElement;
@@ -54,10 +54,14 @@ export class Graphics {
         const correctionX = Math.floor(offsetX / spacing);
         const correctionY = Math.floor(offsetY / spacing);
 
-        const gridLines = new Array(20).fill(0).map<[number, number]>((_v, i) => [spacing * (i + correctionX) - offsetX, spacing * (i - correctionY) + offsetY])
+        const gridLines = new Array(20).fill(0).map<[number, number]>((_v, i) => [
+            spacing * (i + correctionX) - offsetX
+            , spacing * (i - correctionY) + offsetY,
+        ]);
         this.drawRawGridLines(gridLines);
         const zeroLines: [number, number] = [-offsetX, this.canvas.height - 1 + offsetY]
         this.drawRawGridZeroLines(...zeroLines)
+        this.drawRawGridNumbers(zeroLines, gridLines);
     }
 
     private drawRawGridLines(rawGridLines: [number, number][]) {
@@ -82,6 +86,22 @@ export class Graphics {
         this.context.moveTo(0, zy);
         this.context.lineTo(this.canvas.width, zy);
         this.context.stroke();
+    }
+
+    private drawRawGridNumbers([zx, zy]: [number, number], rawGridLines: [number, number][]) {
+        this.context.font = "20px Arial";
+        this.context.fillStyle = "black";
+        this.context.textAlign = "center";
+        this.context.textBaseline = "middle";
+
+        const textPaddingX = 30;
+        const textPaddingY = 10;
+
+        for (const [x, y] of rawGridLines) {
+            this.context.fillText((x + this.transformation_.translation.x).toString(), x, clamp(zy - textPaddingY, textPaddingY, this.canvas.height - textPaddingY))
+            this.context.fillText((this.canvas.height - y + this.transformation_.translation.y).toString(), clamp(zx + textPaddingX, textPaddingX, this.canvas.width - textPaddingX), y)
+        }
+
     }
 
     public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {

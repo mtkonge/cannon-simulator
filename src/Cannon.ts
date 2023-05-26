@@ -5,6 +5,7 @@ import { ObjectsAdderAndRemover } from "./ObjectAdderAndRemover";
 import { SimulationObject } from "./SimulationObject";
 import { Radians } from "./units";
 import { Vector2d } from "./Vector2d";
+import { AirResistanceInputListener } from "./AirResistanceInputListener";
 
 export class Cannon implements SimulationObject {
     private button =
@@ -12,6 +13,7 @@ export class Cannon implements SimulationObject {
     private startSpeedInput =
         document.querySelector<HTMLInputElement>("#cannon-speed")!;
     private buttonListener: () => any;
+    private airResistanceInput = new AirResistanceInputListener()
 
     constructor(
         private pos: Vector2d,
@@ -22,13 +24,16 @@ export class Cannon implements SimulationObject {
         this.button.addEventListener("click", this.buttonListener);
     }
 
-    update(_deltaT: number): void { }
+    update(_deltaT: number): void {
+        document.querySelector<HTMLSpanElement>("#cannon-angle-info")!.innerText = (this.profile.angle() / Math.PI * 180).toPrecision(3) + "°";
+
+    }
 
     render(graphics: Graphics): void {
         graphics.drawCannon(this.pos, this.profile);
         const startPosition =
             this.cannonballStartPosition(this.pos, this.profile.angle(), this.profile.barrelLength());
-        graphics.drawCircle(startPosition.x, startPosition.y, 5, "red");
+        graphics.drawCircle(startPosition.x, startPosition.y, 0.005, "green");
     }
 
     destructor(): void {
@@ -54,6 +59,7 @@ export class Cannon implements SimulationObject {
                 this.cannonballStartPosition(this.pos, this.profile.angle(), this.profile.barrelLength()),
                 this.profile.angle(),
                 startSpeed,
+                this.airResistanceInput
             ),
         );
     }

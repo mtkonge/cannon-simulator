@@ -29,6 +29,11 @@ function main() {
 
         graphics.transformation().update();
 
+        let asdjasd = 0;
+        for (let i = 0; i < 2000000; i++) {
+            asdjasd += (i ** i);
+        }
+
         graphics.clear();
         graphics.drawGrid();
         simulationObjects.render(graphics);

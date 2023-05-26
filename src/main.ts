@@ -3,7 +3,7 @@ import { CanvasInput } from "./CanvasInput";
 import { ExperimentCannonProfile } from "./ExperimentCannonProfile";
 import { Graphics } from "./Graphics";
 import { Objects } from "./Objects";
-import { Vector2d, v2 } from "./Vector2d";
+import { Vector2d, } from "./Vector2d";
 import "./style.css";
 
 function main() {

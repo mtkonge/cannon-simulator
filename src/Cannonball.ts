@@ -14,7 +14,6 @@ import {
 export class Cannonball implements SimulationObject {
     private mass = 0.01;
     private velocity: Vector2d;
-
     constructor(
         private pos: Vector2d,
         angle: Radians,
@@ -27,6 +26,9 @@ export class Cannonball implements SimulationObject {
     }
 
     public update(deltaT: number): void {
+        if (this.pos.y <= 0) {
+            return
+        }
         const drag = dragForce(
             sphereDragCoefficient,
             airDensity,
@@ -38,10 +40,10 @@ export class Cannonball implements SimulationObject {
                 deltaT,
             ),
         );
-        this.pos.add(this.velocity);
+        this.pos.add(this.velocity.clone().extend(deltaT));
     }
 
     public render(graphics: Graphics): void {
-        graphics.drawCannonball(this.pos, 0.1);
+        graphics.drawCannonball(this.pos, 0.01);
     }
 }

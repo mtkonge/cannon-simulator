@@ -41,10 +41,10 @@ export class Graphics {
         this.context.stroke();
     }
 
-    public drawCircleRaw(x: number, y: number, radius: number, fillStyle?: string) {
+    public drawCircle(x: number, y: number, radius: number, fillStyle?: string) {
         this.context.fillStyle = fillStyle ?? "blue";
         this.context.beginPath();
-        this.context.arc(x, y, radius, 0, 2 * Math.PI);
+        this.context.arc(this.x(x), this.y(y), radius, 0, 2 * Math.PI);
         this.context.fill();
     }
 
@@ -102,21 +102,18 @@ export class Graphics {
     }
 
     public drawGridSpecificFactor(factor: number, suffix: string, disExp: number) {
+
         let gridLineStartX = Math.floor(this.transformation_.screenToSimulationX(0))
         gridLineStartX += gridLineStartX % factor
         let gridLineStartY = Math.floor(this.transformation_.screenToSimulationY(0))
         gridLineStartY += gridLineStartY % factor
-        for (let i = 0; i < 2000; ++i) {
+        for (let i = 0; i < 20; ++i) {
 
-            const sx = i * factor + gridLineStartX;
-            const x = this.x(sx)
-            const sy = - gridLineStartY - i * factor
-            const y = this.y(sy)
+            const simulationX = i * factor + gridLineStartX;
+            const x = this.x(simulationX)
+            const simulationY = - gridLineStartY - i * factor
+            const y = this.y(simulationY)
 
-            for (let j = 1; j < 5; ++j) {
-                this.drawLineRaw(v2(this.x(sx + i * factor / 5 * j), 0), v2(this.x(sx + i * factor / 5 * j), this.canvas.height), { strokeStyle: "#eee", lineWidth: 1 })
-                this.drawLineRaw(v2(0, this.y(sy + i * factor / 5 * j)), v2(this.canvas.width, this.y(sy + i * factor / 5 * j)), { strokeStyle: "#eee", lineWidth: 1 })
-            }
 
             this.drawLineRaw(v2(x, 0), v2(x, this.canvas.height), { strokeStyle: "#aaa", lineWidth: 1 })
 
@@ -193,6 +190,6 @@ export class Graphics {
     }
 
     public drawCannonball(pos: Vector2d<Meters>, radius: Meters) {
-        this.drawCircleRaw(this.x(pos.x), this.y(pos.y), this.transformation_.screenScale(radius), "red")
+        this.drawCircle(pos.x, pos.y, this.transformation_.screenScale(radius), "red")
     }
 }

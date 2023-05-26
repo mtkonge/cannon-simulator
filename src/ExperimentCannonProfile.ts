@@ -1,15 +1,15 @@
 import { CannonProfile } from "./CannonProfile";
-import { Radians, degreesToRadians } from "./units";
+import { Meters, Radians, degreesToRadians } from "./units";
 
 export class ExperimentCannonProfile implements CannonProfile {
-    barrelWidth(): number {
-        return 20;
+    barrelWidth(): Meters {
+        return 0.05;;
     }
-    wheelRadius(): number {
-        return 16;
+    wheelRadius(): Meters {
+        return 0.04;
     }
-    barrelLength(): number {
-        return 50;
+    barrelLength(): Meters {
+        return 0.1;
     }
     angle(): Radians {
         const angleInput =

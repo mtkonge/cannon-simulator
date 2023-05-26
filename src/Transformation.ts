@@ -4,7 +4,7 @@ import { Vector2d, v2 } from "./Vector2d";
 export class Transformation {
     public middle: Vector2d;
     /** pixels / meter */
-    private scale = 100;
+    private scale = 1000;
 
     private zoomSpeed = 1.1;
 
@@ -15,19 +15,24 @@ export class Transformation {
     public update() {
         if (this.input.isDragging()) {
             this.middle.add(this.input.dragged().extend(-1));
-            console.log(this.middle)
         }
         if (this.input.scrolled()) {
             const scroll = this.input.scrolled();
-            const scrollPos = this.input.scrolledPosition();
-            console.log(scrollPos)
+            // const scrollPos = this.input.scrolledPosition();
             if (scroll > 0) {
                 this.scale /= this.zoomSpeed;
-                this.middle = this.middle.clone()
             } else if (scroll < 0) {
                 this.scale *= this.zoomSpeed;
             }
         }
+    }
+
+    public screenScale(value: number) {
+        return value * this.scale
+    }
+
+    public simulationScale(value: number) {
+        return value * this.scale
     }
 
     public simulationToScreenX(value: number): number {

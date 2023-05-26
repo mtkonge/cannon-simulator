@@ -1,7 +1,7 @@
 import { Graphics } from "./Graphics";
 import { SimulationObject } from "./SimulationObject";
 import { MetersPerSeconds, Radians } from "./units";
-import { Vector2d } from "./Vector2d";
+import { Vector2d, } from "./Vector2d";
 import {
     acceleration,
     airDensity,
@@ -12,10 +12,8 @@ import {
 } from "./physics";
 
 export class Cannonball implements SimulationObject {
-    private mass = 100;
+    private mass = 0.01;
     private velocity: Vector2d;
-
-    private printamount = 0;
 
     constructor(
         private pos: Vector2d,
@@ -32,12 +30,9 @@ export class Cannonball implements SimulationObject {
         const drag = dragForce(
             sphereDragCoefficient,
             airDensity,
-            sphereCrossSectionalArea(10),
+            sphereCrossSectionalArea(0.01),
             this.velocity.clone(),
         );
-        if (this.printamount < 100) {
-            this.printamount++;
-        }
         this.velocity.add(
             acceleration([gravityForce(this.mass), drag], this.mass).extend(
                 deltaT,
@@ -47,6 +42,6 @@ export class Cannonball implements SimulationObject {
     }
 
     public render(graphics: Graphics): void {
-        graphics.drawCircleRaw(this.pos.x, this.pos.y, 10);
+        graphics.drawCannonball(this.pos, 0.1);
     }
 }

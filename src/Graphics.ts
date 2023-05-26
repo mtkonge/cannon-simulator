@@ -2,6 +2,7 @@ import { CannonProfile } from "./CannonProfile";
 import { Input } from "./Input";
 import { Transformation } from "./Transformation";
 import { Vector2d, v2 } from "./Vector2d";
+import { Meters } from "./units";
 import { Ref, clamp, range } from "./utils";
 
 export class Graphics {
@@ -41,14 +42,15 @@ export class Graphics {
     }
 
     public drawCircleRaw(x: number, y: number, radius: number, fillStyle?: string) {
-        this.context.fillStyle = fillStyle ?? "black";
+        this.context.fillStyle = fillStyle ?? "blue";
         this.context.beginPath();
-        this.context.arc(this.x(x), this.y(y), radius, 0, 2 * Math.PI);
+        this.context.arc(x, y, radius, 0, 2 * Math.PI);
         this.context.fill();
     }
 
     public clear() {
         this.context.fillStyle = "white";
+        this.context.beginPath();
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -104,17 +106,20 @@ export class Graphics {
         gridLineStartX += gridLineStartX % factor
         let gridLineStartY = Math.floor(this.transformation_.screenToSimulationY(0))
         gridLineStartY += gridLineStartY % factor
-        for (let i = 0; i < 20; ++i) {
+        for (let i = 0; i < 2000; ++i) {
 
             const sx = i * factor + gridLineStartX;
             const x = this.x(sx)
+            const sy = - gridLineStartY - i * factor
+            const y = this.y(sy)
+
+            for (let j = 1; j < 5; ++j) {
+                this.drawLineRaw(v2(this.x(sx + i * factor / 5 * j), 0), v2(this.x(sx + i * factor / 5 * j), this.canvas.height), { strokeStyle: "#eee", lineWidth: 1 })
+                this.drawLineRaw(v2(0, this.y(sy + i * factor / 5 * j)), v2(this.canvas.width, this.y(sy + i * factor / 5 * j)), { strokeStyle: "#eee", lineWidth: 1 })
+            }
+
             this.drawLineRaw(v2(x, 0), v2(x, this.canvas.height), { strokeStyle: "#aaa", lineWidth: 1 })
 
-            for (let j = 1; j < 5; ++j)
-                this.drawLineRaw(v2(this.x(sx + i * factor / 5 * j), 0), v2(this.x(sx + i * factor / 5 * j), this.canvas.height), { strokeStyle: "#eee", lineWidth: 1 })
-
-
-            const y = this.y(- gridLineStartY - i * factor)
             this.drawLineRaw(v2(0, y), v2(this.canvas.width, y), { strokeStyle: "#bbb", lineWidth: 1 })
 
             if ((i * factor) + gridLineStartX !== 0)
@@ -135,11 +140,11 @@ export class Graphics {
     }
 
     public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {
-        const wheelRadius = profile.wheelRadius();
+        const wheelRadius = this.transformation_.screenScale(profile.wheelRadius());
 
         this.context.save();
         this.context.fillStyle = "#9F5C41";
-        this.context.lineWidth = 4;
+        this.context.lineWidth = 3;
         this.context.translate(this.x(pos.x), this.y(pos.y));
 
         this.context.beginPath();
@@ -153,7 +158,7 @@ export class Graphics {
         this.context.beginPath();
         this.context.arc(0, 0, wheelRadius, 0, 2 * Math.PI);
         this.context.stroke();
-
+        //
         this.context.fillStyle = "#634133";
         this.context.beginPath();
         this.context.arc(0, 0, wheelRadius * 0.33, 0, 2 * Math.PI);
@@ -164,20 +169,20 @@ export class Graphics {
 
     public drawCannonBarrel(profile: CannonProfile, pos: Vector2d) {
         const angle = profile.angle();
-        const barrelLength = profile.barrelLength();
-        const barrelWidth = profile.barrelWidth();
+        const barrelLength = this.transformation_.screenScale(profile.barrelLength());
+        const barrelWidth = this.transformation_.screenScale(profile.barrelWidth());
         this.context.save();
         this.context.beginPath();
         this.context.fillStyle = "black";
         this.context.translate(this.x(pos.x), this.y(pos.y));
         this.context.rotate(angle);
         this.context.rect(
-            -barrelWidth * 0.5,
-            -barrelLength,
+            (-barrelWidth * 0.5),
+            (-barrelLength),
             barrelWidth,
             barrelLength,
         );
-        this.context.arc(0, 0, 10, Math.PI - 0, Math.PI - 2 * Math.PI);
+        this.context.arc(0, 0, barrelWidth / 2, Math.PI - 0, Math.PI - 2 * Math.PI);
         this.context.fill();
         this.context.restore();
     }
@@ -185,5 +190,9 @@ export class Graphics {
     public drawCannon(pos: Vector2d, cannonProfile: CannonProfile) {
         this.drawCannonBarrel(cannonProfile, pos);
         this.drawCannonWheel(cannonProfile, pos);
+    }
+
+    public drawCannonball(pos: Vector2d<Meters>, radius: Meters) {
+        this.drawCircleRaw(this.x(pos.x), this.y(pos.y), this.transformation_.screenScale(radius), "red")
     }
 }

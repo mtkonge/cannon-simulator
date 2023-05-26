@@ -18,6 +18,9 @@ export type KilogramPerMeters3 = number;
 /** N */
 export type Newton = number;
 
+export type Pixels = number;
+export type PixelsPerMeter = number;
+
 export function degreesToRadians(number: Degrees): Radians {
     return number * Math.PI / 180;
 }

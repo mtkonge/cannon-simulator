@@ -16,9 +16,9 @@ function main() {
     const profile = new ExperimentCannonProfile();
 
     const simulationObjects = new Objects();
-    // simulationObjects.add(
-    //     new Cannon(new Vector2d(50, 50), simulationObjects, profile),
-    // );
+    simulationObjects.add(
+        new Cannon(new Vector2d(0, 0), simulationObjects, profile),
+    );
     simulationObjects.flushAddQueue();
 
     const simulationIteration = (before: number) => {
@@ -31,7 +31,6 @@ function main() {
 
         graphics.clear();
         graphics.drawGrid();
-        graphics.drawPixelsPerMeterScale(v2(400, 750));
         simulationObjects.render(graphics);
 
         input.resetDrag();

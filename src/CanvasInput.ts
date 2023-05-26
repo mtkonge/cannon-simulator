@@ -3,6 +3,7 @@ import { Vector2d, v2 } from "./Vector2d";
 
 export class CanvasInput implements Input {
     private scroll = 0;
+    private scrollPosition = v2(0, 0)
     private dragging = false;
     private mouseDelta = v2(0, 0);
     private mousePosition!: Vector2d;
@@ -23,16 +24,20 @@ export class CanvasInput implements Input {
             this.dragging = false;
         });
         canvas.addEventListener("mousemove", (event: MouseEvent) => {
+            this.scrollPosition = v2(event.offsetX, event.offsetY);
             if (!this.dragging) {
                 return;
             }
             this.mouseDelta.x += this.mousePosition.x - event.offsetX;
-            this.mouseDelta.y -= this.mousePosition.y - event.offsetY;
+            this.mouseDelta.y += this.mousePosition.y - event.offsetY;
             this.mousePosition = v2(event.offsetX, event.offsetY);
         });
     }
     scrolled(): number {
         return this.scroll;
+    }
+    scrolledPosition(): Vector2d {
+        return this.scrollPosition
     }
     resetScroll(): void {
         this.scroll = 0;

@@ -11,6 +11,12 @@ export class Vector2d<T extends number = number> {
         return this;
     }
 
+    public subtract(other: Vector2d<T>) {
+        this.x -= other.x;
+        this.y -= other.y;
+        return this;
+    }
+
     public multiply(other: Vector2d<T>) {
         this.x *= other.x;
         this.y *= other.y;
@@ -32,6 +38,12 @@ export class Vector2d<T extends number = number> {
     public raiseComponents(exponent: number) {
         this.x ** exponent;
         this.y ** exponent;
+        return this;
+    }
+
+    public reverse() {
+        this.x * -1;
+        this.y * -1;
         return this;
     }
 }

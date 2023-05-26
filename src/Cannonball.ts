@@ -47,6 +47,6 @@ export class Cannonball implements SimulationObject {
     }
 
     public render(graphics: Graphics): void {
-        graphics.drawCircle(this.pos.x, this.pos.y, 10);
+        graphics.drawCircleRaw(this.pos.x, this.pos.y, 10);
     }
 }

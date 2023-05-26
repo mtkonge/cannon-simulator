@@ -3,7 +3,7 @@ import { CanvasInput } from "./CanvasInput";
 import { ExperimentCannonProfile } from "./ExperimentCannonProfile";
 import { Graphics } from "./Graphics";
 import { Objects } from "./Objects";
-import { Vector2d, } from "./Vector2d";
+import { Vector2d } from "./Vector2d";
 import "./style.css";
 
 function main() {
@@ -28,11 +28,6 @@ function main() {
         simulationObjects.update(deltaT);
 
         graphics.transformation().update();
-
-        let asdjasd = 0;
-        for (let i = 0; i < 2000000; i++) {
-            asdjasd += (i ** i);
-        }
 
         graphics.clear();
         graphics.drawGrid();

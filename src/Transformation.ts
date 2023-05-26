@@ -1,5 +1,5 @@
 import { Input } from "./Input";
-import { Vector2d, v2 } from "./Vector2d";
+import { Vector2d } from "./Vector2d";
 import { Meters } from "./units";
 import { Pixels, PixelsPerMeter } from "./units";
 
@@ -8,7 +8,7 @@ export class Transformation {
     private scale: PixelsPerMeter = 1000;
     private readonly zoomSpeed = 1.1 as const;
 
-    public constructor(private canvasSize: Vector2d, private input: Input) {
+    public constructor(canvasSize: Vector2d, private input: Input) {
         this.middle = canvasSize.clone().divideComponents(2);
     }
 
@@ -27,22 +27,29 @@ export class Transformation {
                 } else if (scroll < 0 /* && this.scale < 1331 */) {
                     this.scale *= this.zoomSpeed;
                     return this.zoomSpeed - 1;
-                } else { return null }
-            })()
+                } else {
+                    return null;
+                }
+            })();
 
             if (scaleOffsetFactor)
-                this.middle = this.middle.clone().add(this.middle.clone()
-                    .subtract(scrollPos)
-                    .extend(scaleOffsetFactor))
+                this.middle = this.middle
+                    .clone()
+                    .add(
+                        this.middle
+                            .clone()
+                            .subtract(scrollPos)
+                            .extend(scaleOffsetFactor),
+                    );
         }
     }
 
     public screenScale(value: Meters): Pixels {
-        return value * this.scale
+        return value * this.scale;
     }
 
     public simulationScale(value: Pixels): Meters {
-        return value * this.scale
+        return value * this.scale;
     }
 
     public simulationToScreenX(value: Meters): Pixels {

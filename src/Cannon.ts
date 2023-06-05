@@ -38,9 +38,9 @@ export class Cannon implements SimulationObject {
             this.cannonballStartPosition(this.pos);
         graphics.drawCircle(startPosition.x, startPosition.y, 0.005, "green");
         if (this.input.showMeasured()) {
-            graphics.drawCannonStats(this.pos, this.profile.angle(), this.startSpeed())
+            graphics.drawCannonStats(this.pos, this.profile.angle(), this.startSpeed(), this.profile.height())
         } else if (this.input.showCalculated()) {
-            graphics.drawCannonStats(this.pos, this.profile.angle(), this.startSpeed())
+            graphics.drawCannonStats(this.pos, this.profile.angle(), this.startSpeed(), this.profile.height())
 
             const { top, topTime, end, endTime, acceleration, startSpeed, height } = this.calculateProjection();
 
@@ -63,7 +63,7 @@ export class Cannon implements SimulationObject {
         const height = this.profile.height();
         const startSpeed = this.startSpeed()!;
         const acceleration = gravityAcceleration;
-        const startSpeedY = startSpeed * Math.sin(angle)
+        const startSpeedY = startSpeed * Math.cos(angle)
         const a = -0.5 * acceleration
         const b = startSpeedY;
         const c = height;
@@ -71,7 +71,7 @@ export class Cannon implements SimulationObject {
         if (d < 0)
             throw false;
         const endTime = ((-b) - Math.sqrt(d)) / (2 * a);
-        const startSpeedX = startSpeed * Math.cos(angle);
+        const startSpeedX = startSpeed * Math.sin(angle);
         const x = startSpeedX * endTime;
         const topTime = -b / (2 * a)
         const topX = startSpeedX * topTime;

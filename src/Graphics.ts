@@ -351,26 +351,35 @@ export class Graphics {
         this.drawTextRaw(v2(this.x(pos.x) + 10, this.y(pos.y) + 15), `${time.toFixed(3)} s`, { fillStyle: color, textAlign: "left" })
     }
 
-    public drawCannonStats(pos: Vector2d<Meters>, angle: Radians, startSpeed: MetersPerSeconds | null) {
+    public drawCannonStats(pos: Vector2d<Meters>, angle: Radians, startSpeed: MetersPerSeconds | null, height: Meters) {
         const color = "#bf3100";
         this.context.strokeStyle = color;
         this.context.lineWidth = 2;
         this.context.beginPath();
-        this.drawLineRawNoPath(v2(this.x(pos.x), this.y(pos.y)), v2(this.x(pos.x) + 100, this.y(pos.y)))
-        this.context.moveTo(this.x(pos.x), this.y(pos.y))
-        this.context.arc(this.x(pos.x), this.y(pos.y), 100, Math.PI * 1.5 + angle - Math.PI * 2, 0)
+        this.drawLineRawNoPath(v2(this.x(pos.x), this.y(pos.y + height)), v2(this.x(pos.x) + 100, this.y(pos.y + height)))
+        this.context.moveTo(this.x(pos.x), this.y(pos.y + height))
+        this.context.arc(this.x(pos.x), this.y(pos.y + height), 100, Math.PI * 1.5 + angle - Math.PI * 2, 0)
         this.context.stroke();
-        this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y) + 15), `${(-angle / Math.PI * 180 + 90).toFixed(1)}°`, { fillStyle: color, textAlign: "left" })
+        this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y + height) + 15), `${(-angle / Math.PI * 180 + 90).toFixed(1)}°`, { fillStyle: color, textAlign: "left" })
         if (startSpeed)
-            this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y) + 35), `${startSpeed.toFixed(1)} m/s`, { fillStyle: color, textAlign: "left" })
+            this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y + height) + 35), `${startSpeed.toFixed(1)} m/s`, { fillStyle: color, textAlign: "left" })
     }
 
     public drawFunctionInInterval(pos: Vector2d<Meters>, beginX: Meters, endX: Meters, f: (x: Meters) => Meters) {
         const color = "#bf3100";
-        this.context.fillStyle = color;
-        for (let x = this.tm.simulationToScreenX(beginX); x < this.tm.simulationToScreenX(endX); ++x) {
+        const x0 = Math.min(this.tm.simulationToScreenX(beginX), this.tm.simulationToScreenX(endX))
+        const x1 = Math.max(this.tm.simulationToScreenX(beginX), this.tm.simulationToScreenX(endX))
+        this.context.beginPath();
+        this.context.strokeStyle = color;
+        this.context.lineWidth = 2;
+        this.context.moveTo(x0, this.y(pos.y));
+        for (let x = x0; x < x1; ++x) {
             const y = f(this.tm.screenToSimulationX(x));
-            this.context.fillRect(this.x(pos.x + this.tm.screenToSimulationX(x)), this.y(pos.y + y), 1, 1);
+            this.context.lineTo(
+                this.x(pos.x + this.tm.screenToSimulationX(x)),
+                this.y(pos.y + y),
+            );
         }
+        this.context.stroke();
     }
 }

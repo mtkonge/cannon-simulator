@@ -364,4 +364,13 @@ export class Graphics {
         if (startSpeed)
             this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y) + 35), `${startSpeed.toFixed(1)} m/s`, { fillStyle: color, textAlign: "left" })
     }
+
+    public drawFunctionInInterval(pos: Vector2d<Meters>, beginX: Meters, endX: Meters, f: (x: Meters) => Meters) {
+        const color = "#bf3100";
+        this.context.fillStyle = color;
+        for (let x = this.tm.simulationToScreenX(beginX); x < this.tm.simulationToScreenX(endX); ++x) {
+            const y = f(this.tm.screenToSimulationX(x));
+            this.context.fillRect(this.x(pos.x + this.tm.screenToSimulationX(x)), this.y(pos.y + y), 1, 1);
+        }
+    }
 }

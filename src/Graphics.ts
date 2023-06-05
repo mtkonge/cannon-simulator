@@ -231,16 +231,17 @@ export class Graphics {
         const wheelRadius = this.tm.screenScale(
             profile.wheelRadius(),
         );
-        const offsetX = profile.barrelLength() * Math.cos(profile.angle())
-        const offsetY = profile.barrelLength() * Math.sin(profile.angle())
+        const offsetX = profile.barrelLength() * Math.cos(profile.angle() + Math.PI * 0.5);
+        const offsetY = profile.barrelLength() * Math.sin(profile.angle() + Math.PI * 0.5);
 
         this.context.save();
         this.context.fillStyle = "#9F5C41";
         // originally 3 pixels
         this.context.lineWidth = this.tm.screenScale(0.003);
-        this.context.translate(this.x(pos.x - offsetX), this.y(pos.y - offsetY));
+        this.context.translate(this.x(pos.x), this.y(pos.y));
 
         this.context.beginPath();
+        this.context.translate(this.tm.screenScale(offsetX), this.tm.screenScale(offsetY));
         const spokeWidth = this.tm.screenScale(0.003)
         for (let i = 0; i < 4; i++) {
             // originally 4 pixels
@@ -275,17 +276,17 @@ export class Graphics {
         this.context.save();
         this.context.beginPath();
         this.context.fillStyle = "black";
-        this.context.translate(this.x(pos.x - offsetX), this.y(pos.y - offsetY));
+        this.context.translate(this.x(pos.x), this.y(pos.y));
         this.context.rotate(angle);
         this.context.rect(
             -barrelWidth * 0.5,
-            -barrelLength,
+            0,
             barrelWidth,
             barrelLength,
         );
         this.context.arc(
             0,
-            0,
+            barrelLength,
             barrelWidth / 2,
             Math.PI - 0,
             Math.PI - 2 * Math.PI,

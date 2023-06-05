@@ -70,7 +70,7 @@ export class Graphics {
         radius: number,
         fillStyle: string,
     ) {
-        this.drawCircleRaw(this.x(x), this.y(y), this.tm.screenScale(radius), fillStyle,);
+        this.drawCircleRaw(this.x(x), this.y(y), this.tm.screenScale(radius), fillStyle);
     }
 
     public drawCircleRawNoPath(x: number, y: number, radius: number) {
@@ -83,6 +83,14 @@ export class Graphics {
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    private static readonly gridBreakpoints = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000] as const;
+    private static readonly gridUnits = [
+        { maxSpace: 0.01, suffix: "mm", disExp: 3 },
+        { maxSpace: 1, suffix: "cm", disExp: 2 },
+        { maxSpace: 1000, suffix: "m", disExp: 0 },
+        { maxSpace: Infinity, suffix: "km", disExp: -3 },
+    ] as const;
+
     public drawGrid() {
         const screenCapacity: Meters = Math.max(
             this.tm.screenToSimulationX(this.canvas.width) -
@@ -91,24 +99,14 @@ export class Graphics {
             this.tm.screenToSimulationY(0),
         );
 
-        let lineSpace;
-        const breakpoints = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000];
-        for (const breakpoint of breakpoints) {
-            if (screenCapacity < breakpoint) {
-                lineSpace = breakpoint / 10;
-                break;
-            }
-        }
-        lineSpace ||= 1000;
+        const lineSpace = (() => {
+            for (const breakpoint of Graphics.gridBreakpoints)
+                if (screenCapacity < breakpoint)
+                    return breakpoint / 10;
+            return 1000;
+        })()
 
-        const units = [
-            { maxSpace: 0.01,     suffix: "mm", disExp: 3  },
-            { maxSpace: 1,        suffix: "cm", disExp: 2  },
-            { maxSpace: 1000,     suffix: "m",  disExp: 0  },
-            { maxSpace: Infinity, suffix: "km", disExp: -3 },
-        ];
-
-        for (const unit of units) {
+        for (const unit of Graphics.gridUnits) {
             if (lineSpace < unit.maxSpace) {
                 this.drawGridSpecificFactor(lineSpace, unit.suffix, unit.disExp);
                 break;

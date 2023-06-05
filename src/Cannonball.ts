@@ -1,6 +1,6 @@
 import { Graphics } from "./Graphics";
 import { SimulationObject } from "./SimulationObject";
-import { MetersPerSeconds, Radians } from "./units";
+import { Kilogram, Meters, MetersPerSeconds, Radians } from "./units";
 import { Vector2d, v2, } from "./Vector2d";
 import {
     acceleration,
@@ -13,7 +13,8 @@ import {
 import { AirResistanceInputListener } from "./AirResistanceInputListener";
 
 export class Cannonball implements SimulationObject {
-    private mass = 0.01;
+    private mass: Kilogram = 0.01;
+    private radius: Meters = 0.01;
     private velocity: Vector2d;
 
     private previousPositions: Vector2d[] = [];
@@ -34,7 +35,7 @@ export class Cannonball implements SimulationObject {
     public update(deltaT: number): void {
         this.previousPositions.push(this.pos.clone())
 
-        if (this.pos.y <= 0) {
+        if (this.pos.y < 0) {
             return
         }
         const drag = this.dragForce()
@@ -55,13 +56,13 @@ export class Cannonball implements SimulationObject {
                 return dragForce(
                     sphereDragCoefficient,
                     airDensity,
-                    sphereCrossSectionalArea(0.01),
+                    sphereCrossSectionalArea(this.radius),
                     this.velocity.clone(),
                 );
             case "exaggerated": return dragForce(
                 sphereDragCoefficient,
                 airDensity,
-                sphereCrossSectionalArea(0.01 * 10),
+                sphereCrossSectionalArea(this.radius * 10),
                 this.velocity.clone(),
             );
         }

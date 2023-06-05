@@ -15,8 +15,12 @@
   <div class="input-container">
     <button id="shoot-cannon">Skyd kannon!</button>
     <label><input id="cannon-speed" value="10"> Starthastighed [m/s]</label>
-    <label><input id="cannon-angle" type="range" min="0" max="360" value="45"> Vinkel af kanon</label>
-    <p>Kanonens vinkel: <span id="cannon-angle-info">n/a</span></p>
+    <label>
+      <span id="cannon-angle-info">n/a</span>
+      <div class="cannon-angle-marker"></div>
+      <input id="cannon-angle" type="range" min="0" max="180" value="135">
+      Vinkel af kanon
+    </label>
     <label><input type="radio" name="drag" id="drag-off" checked> Ingen luftmodstand</label>
     <label><input type="radio" name="drag" id="drag-realistic"> Realistisk luftmodstand</label>
     <label><input type="radio" name="drag" id="drag-exaggerated"> Overdrevet luftmodstand</label>

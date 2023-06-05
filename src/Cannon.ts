@@ -4,7 +4,7 @@ import { Graphics } from "./Graphics";
 import { ObjectsAdderAndRemover } from "./ObjectAdderAndRemover";
 import { SimulationObject } from "./SimulationObject";
 import { Radians } from "./units";
-import { Vector2d } from "./Vector2d";
+import { Vector2d, v2 } from "./Vector2d";
 import { AirResistanceInputListener } from "./AirResistanceInputListener";
 
 export class Cannon implements SimulationObject {
@@ -25,7 +25,7 @@ export class Cannon implements SimulationObject {
     }
 
     update(_deltaT: number): void {
-        document.querySelector<HTMLSpanElement>("#cannon-angle-info")!.innerText = (this.profile.angle() / Math.PI * 180).toPrecision(3) + "°";
+        document.querySelector<HTMLSpanElement>("#cannon-angle-info")!.innerText = (-this.profile.angle() / Math.PI * 180 + 90).toPrecision(3) + "°";
 
     }
 
@@ -69,9 +69,10 @@ export class Cannon implements SimulationObject {
         angle: Radians,
         barrelLength: number,
     ) {
-        return new Vector2d(
-            x + Math.sin(angle) * barrelLength,
-            y + Math.cos(angle) * barrelLength,
-        );
+        // return new Vector2d(
+        //     x + Math.sin(angle) * barrelLength,
+        //     y + Math.cos(angle) * barrelLength,
+        // );
+        return v2(x, y)
     }
 }

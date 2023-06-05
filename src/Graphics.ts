@@ -8,27 +8,27 @@ import { Ref, clamp } from "./utils";
 export class Graphics {
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
-    private transformation_: Transformation;
+    private tm: Transformation;
 
     public constructor(input: Input) {
         this.canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
         this.context = this.canvas.getContext("2d")!;
-        this.transformation_ = new Transformation(
+        this.tm = new Transformation(
             v2(this.canvas.width, this.canvas.height),
             input,
         );
     }
 
     public transformation(): Ref<Transformation> {
-        return this.transformation_;
+        return this.tm;
     }
 
     private x(value: Meters): Pixels {
-        return this.transformation_.simulationToScreenX(value);
+        return this.tm.simulationToScreenX(value);
     }
 
     private y(value: Meters): Pixels {
-        return this.transformation_.simulationToScreenY(value);
+        return this.tm.simulationToScreenY(value);
     }
 
     public drawLineRaw(
@@ -63,7 +63,7 @@ export class Graphics {
         this.context.arc(
             this.x(x),
             this.y(y),
-            this.transformation_.screenScale(radius),
+            this.tm.screenScale(radius),
             0,
             2 * Math.PI,
         );
@@ -82,10 +82,10 @@ export class Graphics {
 
     public drawGrid() {
         const screenCapacity: Meters = Math.max(
-            this.transformation_.screenToSimulationX(this.canvas.width) -
-                this.transformation_.screenToSimulationX(0),
-            this.transformation_.screenToSimulationY(this.canvas.height) -
-                this.transformation_.screenToSimulationY(0),
+            this.tm.screenToSimulationX(this.canvas.width) -
+            this.tm.screenToSimulationX(0),
+            this.tm.screenToSimulationY(this.canvas.height) -
+            this.tm.screenToSimulationY(0),
         );
 
         if (screenCapacity < 0.01) {
@@ -120,8 +120,12 @@ export class Graphics {
             this.drawGridSpecificFactor(50, "m", 0);
         } else if (screenCapacity < 1000) {
             this.drawGridSpecificFactor(100, "m", 0);
-        } else {
+        } else if (screenCapacity < 2000) {
             this.drawGridSpecificFactor(200, "m", 0);
+        } else if (screenCapacity < 5000) {
+            this.drawGridSpecificFactor(500, "m", 0);
+        } else {
+            this.drawGridSpecificFactor(1000, "km", -3);
         }
 
         this.drawLineRaw(v2(this.x(0), 0), v2(this.x(0), this.canvas.height), {
@@ -148,15 +152,15 @@ export class Graphics {
         this.context.beginPath();
 
         const startX =
-            Math.ceil(this.transformation_.screenToSimulationX(0) / lineSpace) *
-                lineSpace -
+            Math.ceil(this.tm.screenToSimulationX(0) / lineSpace) *
+            lineSpace -
             lineSpace;
         const endX =
             Math.floor(
-                this.transformation_.screenToSimulationX(this.canvas.width) /
-                    lineSpace,
+                this.tm.screenToSimulationX(this.canvas.width) /
+                lineSpace,
             ) *
-                lineSpace +
+            lineSpace +
             lineSpace;
         for (let x = startX; x <= endX; x += lineSpace) {
             this.drawLineRawNoPath(
@@ -168,14 +172,14 @@ export class Graphics {
 
         const startY =
             Math.floor(
-                this.transformation_.screenToSimulationY(this.canvas.height) /
-                    lineSpace,
+                this.tm.screenToSimulationY(this.canvas.height) /
+                lineSpace,
             ) *
-                lineSpace +
+            lineSpace +
             lineSpace;
         const endY =
-            Math.ceil(this.transformation_.screenToSimulationY(0) / lineSpace) *
-                lineSpace -
+            Math.ceil(this.tm.screenToSimulationY(0) / lineSpace) *
+            lineSpace -
             lineSpace;
         for (let y = startY; y <= endY; y += lineSpace) {
             this.drawLineRawNoPath(
@@ -221,18 +225,23 @@ export class Graphics {
     }
 
     public drawCannonWheel(profile: CannonProfile, pos: Vector2d) {
-        const wheelRadius = this.transformation_.screenScale(
+        const wheelRadius = this.tm.screenScale(
             profile.wheelRadius(),
         );
+        const offsetX = profile.barrelLength() * Math.cos(profile.angle())
+        const offsetY = profile.barrelLength() * Math.sin(profile.angle())
 
         this.context.save();
         this.context.fillStyle = "#9F5C41";
-        this.context.lineWidth = 3;
-        this.context.translate(this.x(pos.x), this.y(pos.y));
+        // originally 3 pixels
+        this.context.lineWidth = this.tm.screenScale(0.003);
+        this.context.translate(this.x(pos.x - offsetX), this.y(pos.y - offsetY));
 
         this.context.beginPath();
+        const spokeWidth = this.tm.screenScale(0.003)
         for (let i = 0; i < 4; i++) {
-            this.context.rect(-wheelRadius, -2, wheelRadius * 2, 4);
+            // originally 4 pixels
+            this.context.rect(-wheelRadius, -2 - spokeWidth / 2, wheelRadius * 2, spokeWidth);
             this.context.rotate(Math.PI * 0.25);
         }
         this.context.fill();
@@ -252,16 +261,18 @@ export class Graphics {
 
     public drawCannonBarrel(profile: CannonProfile, pos: Vector2d) {
         const angle = profile.angle();
-        const barrelLength = this.transformation_.screenScale(
+        const barrelLength = this.tm.screenScale(
             profile.barrelLength(),
         );
-        const barrelWidth = this.transformation_.screenScale(
+        const offsetX = profile.barrelLength() * Math.cos(profile.angle())
+        const offsetY = profile.barrelLength() * Math.sin(profile.angle())
+        const barrelWidth = this.tm.screenScale(
             profile.barrelWidth(),
         );
         this.context.save();
         this.context.beginPath();
         this.context.fillStyle = "black";
-        this.context.translate(this.x(pos.x), this.y(pos.y));
+        this.context.translate(this.x(pos.x - offsetX), this.y(pos.y - offsetY));
         this.context.rotate(angle);
         this.context.rect(
             -barrelWidth * 0.5,
@@ -311,7 +322,7 @@ export class Graphics {
             this.drawCircleRawNoPath(
                 this.x(x),
                 this.y(y),
-                this.transformation_.screenScale(0.005),
+                this.tm.screenScale(0.005),
             );
         }
         this.context.fill();

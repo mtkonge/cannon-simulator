@@ -1,8 +1,8 @@
-import { Radians } from "./units";
+import { Meters, Radians } from "./units";
 
 export interface CannonProfile {
-    wheelRadius(): number;
-    barrelLength(): number;
-    barrelWidth(): number;
+    wheelRadius(): Meters;
+    barrelLength(): Meters;
+    barrelWidth(): Meters;
     angle(): Radians;
 }

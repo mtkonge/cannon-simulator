@@ -21,10 +21,10 @@ export class Transformation {
             const scrollPos = this.input.scrolledPosition();
 
             const scaleOffsetFactor = (() => {
-                if (scroll > 0 /* && this.scale > 47 */) {
+                if (scroll > 0 && this.scale > 0.06) {
                     this.scale /= this.zoomSpeed;
                     return (1 - this.zoomSpeed) / this.zoomSpeed;
-                } else if (scroll < 0 /* && this.scale < 1331 */) {
+                } else if (scroll < 0 && this.scale < 251637) {
                     this.scale *= this.zoomSpeed;
                     return this.zoomSpeed - 1;
                 } else {

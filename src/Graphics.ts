@@ -223,7 +223,7 @@ export class Graphics {
         this.context.fillStyle = "#9F5C41";
         // originally 3 pixels
         this.context.lineWidth = this.tm.screenScale(0.003);
-        this.context.translate(this.x(pos.x), this.y(pos.y));
+        this.context.translate(this.x(pos.x), this.y(pos.y + profile.height()));
 
         this.context.beginPath();
         this.context.translate(this.tm.screenScale(offsetX), this.tm.screenScale(offsetY));
@@ -259,7 +259,7 @@ export class Graphics {
         this.context.save();
         this.context.beginPath();
         this.context.fillStyle = "black";
-        this.context.translate(this.x(pos.x), this.y(pos.y));
+        this.context.translate(this.x(pos.x), this.y(pos.y + profile.height()));
         this.context.rotate(angle);
         this.context.rect(
             -barrelWidth * 0.5,

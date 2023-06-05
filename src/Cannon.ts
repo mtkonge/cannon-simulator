@@ -47,16 +47,15 @@ export class Cannon implements SimulationObject {
             const startSpeed = this.startSpeed()!;
             const acceleration = gravityAcceleration;
             const startSpeedY = startSpeed * Math.sin(angle)
-            // y = 1/2 * a * t^2 + V_0y * t - h
-            // 0 = 1/2 * -acceleration * t^2 + startSpeedY * t - height 
-            //
-            const a = 0.5 * acceleration
+            // y = -1/2 * g * t^2 + V_0y * t + h
+            // skæringspunkt med x aksen for en parabel 
+            const a = -0.5 * acceleration
             const b = startSpeedY;
-            const c = -height;
-            const d = b ** 2 - 4 * a * c;
+            const c = height;
+            const d = (b ** 2) - (4 * a * c);
             if (d < 0)
                 throw false;
-            const time = (-b + Math.sqrt(d)) / 2 * a;
+            const time = ((-b) - Math.sqrt(d)) / (2 * a);
             const startSpeedX = startSpeed * Math.cos(angle);
             const x = startSpeedX * time;
             // v_y = -g * t + v_0y

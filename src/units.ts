@@ -11,8 +11,10 @@ export type Meters2 = number;
 export type Meters3 = number;
 /** s */
 export type Seconds = number;
-/** kg / s */
+/** m / s */
 export type MetersPerSeconds = number;
+/** m / s^2 */
+export type MetersPerSeconds2 = number;
 /** kg */
 export type Kilogram = number;
 /** kg / m^3 */

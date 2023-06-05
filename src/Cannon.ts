@@ -3,7 +3,7 @@ import { Cannonball } from "./Cannonball";
 import { Graphics } from "./Graphics";
 import { ObjectsAdderAndRemover } from "./ObjectAdderAndRemover";
 import { SimulationObject } from "./SimulationObject";
-import { Radians } from "./units";
+import { Meters, MetersPerSeconds, MetersPerSeconds2, Seconds } from "./units";
 import { Vector2d, v2 } from "./Vector2d";
 import { AirResistanceInputListener } from "./AirResistanceInputListener";
 import { Input } from "./Input";
@@ -42,42 +42,49 @@ export class Cannon implements SimulationObject {
         } else if (this.input.showCalculated()) {
             graphics.drawCannonStats(this.pos, this.profile.angle(), this.startSpeed())
 
-            const angle = this.profile.angle();
-            const height = this.profile.height();
-            const startSpeed = this.startSpeed()!;
-            const acceleration = gravityAcceleration;
-            const startSpeedY = startSpeed * Math.sin(angle)
-            // y = -1/2 * g * t^2 + V_0y * t + h
-            // skæringspunkt med x aksen for en parabel 
-            const a = -0.5 * acceleration
-            const b = startSpeedY;
-            const c = height;
-            const d = (b ** 2) - (4 * a * c);
-            if (d < 0)
-                throw false;
-            const time = ((-b) - Math.sqrt(d)) / (2 * a);
-            const startSpeedX = startSpeed * Math.cos(angle);
-            const x = startSpeedX * time;
-            // v_y = -g * t + v_0y
-            // 0 = v_y
-            // 0 = -g * t_top + v0_y
-            // 0 = -acceleration * t_top + startSpeedY
-            // -startSpeedY = -acceleration * t_top
-            // t_top = -startSpeedY / -acceleration
-            // t_top = -b
-            //
+            const { top, topTime, end, endTime, acceleration, startSpeed, height } = this.calculateProjection();
 
-            const topTime = -b / (2 * a)
-            const topX = startSpeedX * topTime;
-            const topY = a * (topTime ** 2) + b * topTime + height;
+            graphics.drawTopPointStats(top, topTime)
+            graphics.drawEndPointStats(end, top, endTime)
+            graphics.drawFunctionInInterval(v2(0, 0), 0, end.x, (x) => 0.5 * -acceleration * (x / startSpeed.x) ** 2 + (x / startSpeed.x) * startSpeed.y + height);
+        }
+    }
 
-            //const topTime = startSpeedY / acceleration;
-            //const topY = 1 / 2 * acceleration * topTime ** 2 + startSpeedY * topTime - height;
-            //const topX = startSpeedX * time;
+    private calculateProjection(): {
+        end: Vector2d<Meters>,
+        endTime: Seconds,
+        top: Vector2d<Meters>,
+        topTime: Seconds,
+        startSpeed: Vector2d<MetersPerSeconds>,
+        acceleration: MetersPerSeconds2,
+        height: Meters,
+    } {
+        const angle = this.profile.angle();
+        const height = this.profile.height();
+        const startSpeed = this.startSpeed()!;
+        const acceleration = gravityAcceleration;
+        const startSpeedY = startSpeed * Math.sin(angle)
+        const a = -0.5 * acceleration
+        const b = startSpeedY;
+        const c = height;
+        const d = (b ** 2) - (4 * a * c);
+        if (d < 0)
+            throw false;
+        const endTime = ((-b) - Math.sqrt(d)) / (2 * a);
+        const startSpeedX = startSpeed * Math.cos(angle);
+        const x = startSpeedX * endTime;
+        const topTime = -b / (2 * a)
+        const topX = startSpeedX * topTime;
+        const topY = a * (topTime ** 2) + b * topTime + height;
 
-            graphics.drawTopPointStats(v2(topX, topY), topTime)
-            graphics.drawEndPointStats(v2(x, 0), v2(topX, topY), time)
-            graphics.drawFunctionInInterval(v2(0, 0), 0, x, (x) => 0.5 * -acceleration * (x / startSpeedX) ** 2 + (x / startSpeedX) * startSpeedY + height);
+        return {
+            end: v2(x, 0),
+            endTime,
+            top: v2(topX, topY),
+            topTime,
+            startSpeed: v2(startSpeedX, startSpeedY),
+            acceleration,
+            height,
         }
     }
 

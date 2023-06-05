@@ -105,8 +105,8 @@ export class Cannon implements SimulationObject {
 
     private cannonballStartPosition(
         { x, y }: Vector2d,
-        angle: Radians,
-        barrelLength: number,
+        _angle: Radians,
+        _barrelLength: number,
     ) {
         // return new Vector2d(
         //     x + Math.sin(angle) * barrelLength,

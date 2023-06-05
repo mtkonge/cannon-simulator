@@ -271,8 +271,6 @@ export class Graphics {
         const barrelLength = this.tm.screenScale(
             profile.barrelLength(),
         );
-        const offsetX = profile.barrelLength() * Math.cos(profile.angle())
-        const offsetY = profile.barrelLength() * Math.sin(profile.angle())
         const barrelWidth = this.tm.screenScale(
             profile.barrelWidth(),
         );

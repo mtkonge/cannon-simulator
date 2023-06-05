@@ -52,22 +52,25 @@ export class Graphics {
         this.context.lineTo(toPos.x, toPos.y);
     }
 
+    public drawCircleRaw(
+        x: number,
+        y: number,
+        radius: number,
+        fillStyle: string,
+    ) {
+        this.context.fillStyle = fillStyle;
+        this.context.beginPath();
+        this.context.arc(x, y, radius, 0, 2 * Math.PI,);
+        this.context.fill();
+    }
+
     public drawCircle(
         x: number,
         y: number,
         radius: number,
-        fillStyle?: string,
+        fillStyle: string,
     ) {
-        this.context.fillStyle = fillStyle ?? "blue";
-        this.context.beginPath();
-        this.context.arc(
-            this.x(x),
-            this.y(y),
-            this.tm.screenScale(radius),
-            0,
-            2 * Math.PI,
-        );
-        this.context.fill();
+        this.drawCircleRaw(this.x(x), this.y(y), this.tm.screenScale(radius), fillStyle,);
     }
 
     public drawCircleRawNoPath(x: number, y: number, radius: number) {
@@ -298,6 +301,10 @@ export class Graphics {
 
     public drawCannonball(pos: Vector2d<Meters>, radius: Meters) {
         this.drawCircle(pos.x, pos.y, radius, "red");
+    }
+
+    public drawCannonballFixed(pos: Vector2d<Meters>) {
+        this.drawCircleRaw(this.x(pos.x), this.y(pos.y), 10, "red");
     }
 
     public drawPreviousCannonballPositions(positions: Vector2d[]) {

@@ -16,6 +16,8 @@ export class Cannonball implements SimulationObject {
     private mass: Kilogram = 0.01;
     private radius: Meters = 0.01;
     private velocity: Vector2d;
+    private accumulatedDeltaT = 0;
+    private done = false;
 
     private previousPositions: Vector2d[] = [];
 
@@ -36,8 +38,14 @@ export class Cannonball implements SimulationObject {
         this.previousPositions.push(this.pos.clone())
 
         if (this.pos.y < 0) {
+            if (!this.done) {
+                this.done = true;
+                console.log(this.accumulatedDeltaT)
+            }
             return
         }
+        this.accumulatedDeltaT += deltaT;
+
         const drag = this.dragForce()
         this.velocity.add(
             acceleration([
@@ -70,6 +78,6 @@ export class Cannonball implements SimulationObject {
 
     public render(graphics: Graphics): void {
         graphics.drawPreviousCannonballPositions(this.previousPositions)
-        graphics.drawCannonball(this.pos, 0.01);
+        graphics.drawCannonballFixed(this.pos);
     }
 }

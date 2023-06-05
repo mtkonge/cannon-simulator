@@ -25,11 +25,11 @@ export class Cannon implements SimulationObject {
     }
 
     update(_deltaT: number): void {
-        document.querySelector<HTMLSpanElement>("#cannon-angle-info")!.innerText = (-this.profile.angle() / Math.PI * 180 + 90).toPrecision(3) + "°";
 
     }
 
     render(graphics: Graphics): void {
+        document.querySelector<HTMLSpanElement>("#cannon-angle-info")!.innerText = (-this.profile.angle() / Math.PI * 180 + 90).toPrecision(3) + "°";
         graphics.drawCannon(this.pos, this.profile);
         const startPosition =
             this.cannonballStartPosition(this.pos, this.profile.angle(), this.profile.barrelLength());

@@ -2,7 +2,7 @@ import { CannonProfile } from "./CannonProfile";
 import { Input } from "./Input";
 import { Transformation } from "./Transformation";
 import { Vector2d, v2 } from "./Vector2d";
-import { Meters, Pixels } from "./units";
+import { Meters, Pixels, Seconds } from "./units";
 import { Ref, clamp } from "./utils";
 
 export class Graphics {
@@ -146,6 +146,8 @@ export class Graphics {
         suffix: string,
         disExp: number,
     ) {
+        const gridZeroThreshold = 0.000001;
+
         const textPaddingX = 40;
         const textPaddingY = 20;
 
@@ -170,7 +172,7 @@ export class Graphics {
                 v2(this.x(x), 0),
                 v2(this.x(x), this.canvas.height),
             );
-            this.drawGridSpecificFactorYText(x, textPaddingY, disExp, suffix);
+            if (x > gridZeroThreshold || x < -gridZeroThreshold) this.drawGridSpecificFactorYText(x, textPaddingY, disExp, suffix);
         }
 
         const startY =
@@ -189,7 +191,8 @@ export class Graphics {
                 v2(0, this.y(y)),
                 v2(this.canvas.width, this.y(y)),
             );
-            this.drawGridSpecificFactorXText(y, textPaddingX, disExp, suffix);
+            if (y > gridZeroThreshold || y < -gridZeroThreshold)
+                this.drawGridSpecificFactorXText(y, textPaddingX, disExp, suffix);
         }
 
         this.context.stroke();
@@ -204,7 +207,7 @@ export class Graphics {
         const textY =
             clamp(this.y(0), padding * 2, this.canvas.height) - padding;
         const text = `${Math.round(x * 10 ** disExp)} ${suffix}`;
-        this.drawTextRaw(v2(this.x(x), textY), text);
+        this.drawTextRaw(v2(this.x(x), textY), text, {});
     }
 
     private drawGridSpecificFactorXText(
@@ -216,14 +219,14 @@ export class Graphics {
         const textX =
             clamp(this.x(0), 0, this.canvas.width - padding * 2) + padding;
         const text = `${Math.round(y * 10 ** disExp)} ${suffix}`;
-        this.drawTextRaw(v2(textX, this.y(y)), text);
+        this.drawTextRaw(v2(textX, this.y(y)), text, {});
     }
 
-    private drawTextRaw(pos: Vector2d, text: string) {
-        this.context.font = "20px Arial";
-        this.context.fillStyle = "#666";
-        this.context.textAlign = "center";
-        this.context.textBaseline = "middle";
+    private drawTextRaw(pos: Vector2d, text: string, options: { font?: string, fillStyle?: string, textAlign?: "left" | "right" | "center" | "start" | "end", textBaseline?: "top" | "hanging" | "middle" | "alphabetic" | "ideographic" | "bottom" }) {
+        this.context.font = options.font ?? "20px Arial";
+        this.context.fillStyle = options.fillStyle ?? "#666";
+        this.context.textAlign = options.textAlign ?? "center";
+        this.context.textBaseline = options.textBaseline ?? "middle";
         this.context.fillText(text, pos.x, pos.y);
     }
 
@@ -334,5 +337,18 @@ export class Graphics {
             );
         }
         this.context.fill();
+    }
+
+    public drawTopPointStats(pos: Vector2d<Meters>, time: Seconds) {
+        this.drawLineRaw(v2(this.x(0), this.y(pos.y)), v2(this.x(pos.x), this.y(pos.y)), {
+            strokeStyle: "#000",
+            lineWidth: 2,
+        })
+        this.drawLineRaw(v2(this.x(pos.x), this.y(pos.y)), v2(this.x(pos.x), this.y(pos.y) - 15), {
+            strokeStyle: "#000",
+            lineWidth: 2,
+        })
+        this.drawTextRaw(v2(this.x(pos.x), this.y(pos.y) - 15), `${pos.y.toFixed(3)} m`, { fillStyle: "#000" })
+        this.drawTextRaw(v2(this.x(pos.x), this.y(pos.y) - 35), `${time.toFixed(3)} s`, { fillStyle: "#000" })
     }
 }

@@ -17,7 +17,7 @@ function main() {
 
     const simulationObjects = new Objects();
     simulationObjects.add(
-        new Cannon(new Vector2d(0, 0), simulationObjects, profile),
+        new Cannon(new Vector2d(0, 0), simulationObjects, profile, input),
     );
     simulationObjects.flushAddQueue();
 

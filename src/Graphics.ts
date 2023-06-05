@@ -2,7 +2,7 @@ import { CannonProfile } from "./CannonProfile";
 import { Input } from "./Input";
 import { Transformation } from "./Transformation";
 import { Vector2d, v2 } from "./Vector2d";
-import { Meters, Pixels, Seconds } from "./units";
+import { Meters, MetersPerSeconds, Pixels, Radians, Seconds } from "./units";
 import { Ref, clamp } from "./utils";
 
 export class Graphics {
@@ -340,15 +340,48 @@ export class Graphics {
     }
 
     public drawTopPointStats(pos: Vector2d<Meters>, time: Seconds) {
+        const color = "#d76a03"
         this.drawLineRaw(v2(this.x(0), this.y(pos.y)), v2(this.x(pos.x), this.y(pos.y)), {
-            strokeStyle: "#000",
+            strokeStyle: color,
             lineWidth: 2,
         })
         this.drawLineRaw(v2(this.x(pos.x), this.y(pos.y)), v2(this.x(pos.x), this.y(pos.y) - 15), {
-            strokeStyle: "#000",
+            strokeStyle: color,
             lineWidth: 2,
         })
-        this.drawTextRaw(v2(this.x(pos.x), this.y(pos.y) - 15), `${pos.y.toFixed(3)} m`, { fillStyle: "#000" })
-        this.drawTextRaw(v2(this.x(pos.x), this.y(pos.y) - 35), `${time.toFixed(3)} s`, { fillStyle: "#000" })
+        this.drawTextRaw(v2(this.x(pos.x) + 10, this.y(pos.y) - 15), `(${pos.x.toFixed(3)} m, ${pos.y.toFixed(3)} m)`, { fillStyle: color, textAlign: "left" })
+        this.drawTextRaw(v2(this.x(pos.x) + 10, this.y(pos.y) - 35), `${time.toFixed(3)} s`, { fillStyle: color, textAlign: "left" })
+    }
+
+    public drawEndPointStats(pos: Vector2d<Meters>, topPos: Vector2d<Meters>, time: Seconds) {
+        const color = "#bf3100";
+        this.drawLineRaw(v2(this.x(topPos.x), this.y(topPos.y)), v2(this.x(pos.x), this.y(topPos.y)), {
+            strokeStyle: color,
+            lineWidth: 2,
+        })
+        this.drawLineRaw(v2(this.x(pos.x), this.y(topPos.y)), v2(this.x(pos.x), this.y(pos.y)), {
+            strokeStyle: color,
+            lineWidth: 2,
+        })
+        this.drawLineRaw(v2(this.x(pos.x), this.y(pos.y)), v2(this.x(pos.x) + 15, this.y(pos.y)), {
+            strokeStyle: color,
+            lineWidth: 2,
+        })
+        this.drawTextRaw(v2(this.x(pos.x) + 10, this.y(pos.y) + 35), `${pos.x.toFixed(3)} m`, { fillStyle: color, textAlign: "left" })
+        this.drawTextRaw(v2(this.x(pos.x) + 10, this.y(pos.y) + 15), `${time.toFixed(3)} s`, { fillStyle: color, textAlign: "left" })
+    }
+
+    public drawCannonStats(pos: Vector2d<Meters>, angle: Radians, startSpeed: MetersPerSeconds | null) {
+        const color = "#bf3100";
+        this.context.strokeStyle = color;
+        this.context.lineWidth = 2;
+        this.context.beginPath();
+        this.drawLineRawNoPath(v2(this.x(pos.x), this.y(pos.y)), v2(this.x(pos.x) + 100, this.y(pos.y)))
+        this.context.moveTo(this.x(pos.x), this.y(pos.y))
+        this.context.arc(this.x(pos.x), this.y(pos.y), 100, Math.PI * 1.5 + angle - Math.PI * 2, 0)
+        this.context.stroke();
+        this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y) + 15), `${(-angle / Math.PI * 180 + 90).toFixed(1)}°`, { fillStyle: color, textAlign: "left" })
+        if (startSpeed)
+            this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y) + 35), `${startSpeed.toFixed(1)} m/s`, { fillStyle: color, textAlign: "left" })
     }
 }

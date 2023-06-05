@@ -11,6 +11,7 @@ import {
     sphereDragCoefficient,
 } from "./physics";
 import { AirResistanceInputListener } from "./AirResistanceInputListener";
+import { Input } from "./Input";
 
 export class Cannonball implements SimulationObject {
     private mass: Kilogram = 0.01;
@@ -28,7 +29,8 @@ export class Cannonball implements SimulationObject {
         private pos: Vector2d,
         angle: Radians,
         startSpeed: MetersPerSeconds,
-        private airResistanceInput: AirResistanceInputListener
+        private airResistanceInput: AirResistanceInputListener,
+        private input: Input,
     ) {
         this.mostToppestPoint = pos.clone();
         this.velocity = new Vector2d(
@@ -38,14 +40,15 @@ export class Cannonball implements SimulationObject {
     }
 
     public update(deltaT: number): void {
-        this.previousPositions.push(this.pos.clone())
 
         if (this.pos.y < 0) {
             if (!this.done) {
+                this.previousPositions.push(this.pos.clone())
                 this.done = true;
             }
             return
         }
+        this.previousPositions.push(this.pos.clone())
         this.accumulatedDeltaT += deltaT;
 
         const drag = this.dragForce()
@@ -85,7 +88,24 @@ export class Cannonball implements SimulationObject {
 
     public render(graphics: Graphics): void {
         graphics.drawPreviousCannonballPositions(this.previousPositions)
-        graphics.drawCannonballFixed(this.pos);
-        graphics.drawTopPointStats(this.mostToppestPoint, this.mostToppestPointTime)
+
+        const touchdownPos = (() => {
+            if (this.previousPositions.length < 2)
+                return null;
+            const { x: x1, y: y1 } = this.previousPositions.at(-2)!;
+            const { x: x2, y: y2 } = this.previousPositions.at(-1)!;
+            const a = (y2 - y1) / (x2 - x1);
+            const b = y2 - a * x2;
+            const x = -b / a;
+            return v2(x, 0)
+        })();
+
+        if (this.done)
+            graphics.drawCannonballFixed(touchdownPos ?? this.pos);
+        if (this.input.showMeasured()) {
+            graphics.drawTopPointStats(this.mostToppestPoint, this.mostToppestPointTime)
+            if (this.done)
+                graphics.drawEndPointStats(touchdownPos ?? this.pos, this.mostToppestPoint, this.accumulatedDeltaT)
+        }
     }
 }

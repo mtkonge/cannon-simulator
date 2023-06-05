@@ -7,4 +7,6 @@ export interface Input {
     isDragging(): boolean;
     dragged(): Vector2d;
     resetDrag(): void;
+    showMeasured(): boolean;
+    showCalculated(): boolean;
 }

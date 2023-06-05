@@ -7,6 +7,8 @@ export class CanvasInput implements Input {
     private dragging = false;
     private mouseDelta = v2(0, 0);
     private mousePosition!: Vector2d;
+    private showMeasuredCheckbox = document.querySelector<HTMLInputElement>("#show-measured")!;
+    private showCalculatedCheckbox = document.querySelector<HTMLInputElement>("#show-calculated")!;
 
     constructor(canvas: HTMLCanvasElement) {
         canvas.addEventListener("wheel", (event: WheelEvent) => {
@@ -32,6 +34,12 @@ export class CanvasInput implements Input {
             this.mouseDelta.y += this.mousePosition.y - event.offsetY;
             this.mousePosition = v2(event.offsetX, event.offsetY);
         });
+    }
+    showMeasured(): boolean {
+        return this.showMeasuredCheckbox.checked;
+    }
+    showCalculated(): boolean {
+        return this.showCalculatedCheckbox.checked;
     }
     scrolled(): number {
         return this.scroll;

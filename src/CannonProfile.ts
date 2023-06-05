@@ -5,4 +5,5 @@ export interface CannonProfile {
     barrelLength(): Meters;
     barrelWidth(): Meters;
     angle(): Radians;
+    height(): Meters;
 }

@@ -15,6 +15,7 @@
   <div class="input-container">
     <button id="shoot-cannon">Skyd kannon!</button>
     <label><input id="cannon-speed" value="10"> Starthastighed [m/s]</label>
+    <label><input id="cannon-height" type="number" value="0"> Højde [m]</label>
     <label>
       <span id="cannon-angle-info">n/a</span>
       <div class="cannon-angle-marker"></div>
@@ -24,7 +25,9 @@
     <label><input type="radio" name="drag" id="drag-off" checked> Ingen luftmodstand</label>
     <label><input type="radio" name="drag" id="drag-realistic"> Realistisk luftmodstand</label>
     <label><input type="radio" name="drag" id="drag-exaggerated"> Overdrevet luftmodstand</label>
-    <label><input type="checkbox" id="stats"> Overdrevet luftmodstand</label>
+    <label><input type="radio" name="markings" checked> Ingen markeringer</label>
+    <label><input type="radio" name="markings" id="show-measured"> Vis målinger</label>
+    <label><input type="radio" name="markings" id="show-calculated"> Vis beregnet</label>
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>

@@ -91,44 +91,28 @@ export class Graphics {
             this.tm.screenToSimulationY(0),
         );
 
-        if (screenCapacity < 0.01) {
-            this.drawGridSpecificFactor(0.001, "mm", 3);
-        } else if (screenCapacity < 0.02) {
-            this.drawGridSpecificFactor(0.002, "mm", 3);
-        } else if (screenCapacity < 0.05) {
-            this.drawGridSpecificFactor(0.005, "mm", 3);
-        } else if (screenCapacity < 0.1) {
-            this.drawGridSpecificFactor(0.01, "cm", 2);
-        } else if (screenCapacity < 0.2) {
-            this.drawGridSpecificFactor(0.02, "cm", 2);
-        } else if (screenCapacity < 0.5) {
-            this.drawGridSpecificFactor(0.05, "cm", 2);
-        } else if (screenCapacity < 1) {
-            this.drawGridSpecificFactor(0.1, "cm", 2);
-        } else if (screenCapacity < 2) {
-            this.drawGridSpecificFactor(0.2, "cm", 2);
-        } else if (screenCapacity < 5) {
-            this.drawGridSpecificFactor(0.5, "cm", 2);
-        } else if (screenCapacity < 10) {
-            this.drawGridSpecificFactor(1, "m", 0);
-        } else if (screenCapacity < 20) {
-            this.drawGridSpecificFactor(2, "m", 0);
-        } else if (screenCapacity < 50) {
-            this.drawGridSpecificFactor(5, "m", 0);
-        } else if (screenCapacity < 100) {
-            this.drawGridSpecificFactor(10, "m", 0);
-        } else if (screenCapacity < 200) {
-            this.drawGridSpecificFactor(20, "m", 0);
-        } else if (screenCapacity < 500) {
-            this.drawGridSpecificFactor(50, "m", 0);
-        } else if (screenCapacity < 1000) {
-            this.drawGridSpecificFactor(100, "m", 0);
-        } else if (screenCapacity < 2000) {
-            this.drawGridSpecificFactor(200, "m", 0);
-        } else if (screenCapacity < 5000) {
-            this.drawGridSpecificFactor(500, "m", 0);
-        } else {
-            this.drawGridSpecificFactor(1000, "km", -3);
+        let lineSpace;
+        const breakpoints = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000];
+        for (const breakpoint of breakpoints) {
+            if (screenCapacity < breakpoint) {
+                lineSpace = breakpoint / 10;
+                break;
+            }
+        }
+        lineSpace ||= 1000;
+
+        const units = [
+            { maxSpace: 0.01,     suffix: "mm", disExp: 3  },
+            { maxSpace: 1,        suffix: "cm", disExp: 2  },
+            { maxSpace: 1000,     suffix: "m",  disExp: 0  },
+            { maxSpace: Infinity, suffix: "km", disExp: -3 },
+        ];
+
+        for (const unit of units) {
+            if (lineSpace < unit.maxSpace) {
+                this.drawGridSpecificFactor(lineSpace, unit.suffix, unit.disExp);
+                break;
+            }
         }
 
         this.drawLineRaw(v2(this.x(0), 0), v2(this.x(0), this.canvas.height), {

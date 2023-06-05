@@ -64,12 +64,21 @@ export class Cannon implements SimulationObject {
             // 0 = -acceleration * t_top + startSpeedY
             // -startSpeedY = -acceleration * t_top
             // t_top = -startSpeedY / -acceleration
-            const topTime = startSpeedY / acceleration;
-            const topY = 1 / 2 * acceleration * topTime ** 2 + startSpeedY * topTime - height;
-            const topX = startSpeedX * time;
+            // t_top = -b
+            //
 
-            graphics.drawTopPointStats(v2(topY, topX), topTime)
-            graphics.drawEndPointStats(v2(x, 0), v2(topY, topX), time)
+            const topTime = -b / (2 * a)
+            const topX = startSpeedX * topTime;
+            const topY = a * (topTime ** 2) + b * topTime + height;
+
+            console.log(topTime, topX, topY);
+
+            //const topTime = startSpeedY / acceleration;
+            //const topY = 1 / 2 * acceleration * topTime ** 2 + startSpeedY * topTime - height;
+            //const topX = startSpeedX * time;
+
+            graphics.drawTopPointStats(v2(topX, topY), topTime)
+            graphics.drawEndPointStats(v2(x, 0), v2(topX, topY), time)
         }
     }
 

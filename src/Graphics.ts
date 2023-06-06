@@ -99,19 +99,9 @@ export class Graphics {
             this.tm.screenToSimulationY(0),
         );
 
-        const lineSpace = (() => {
-            for (const breakpoint of Graphics.gridBreakpoints)
-                if (screenCapacity < breakpoint)
-                    return breakpoint / 10;
-            return 1000;
-        })()
-
-        for (const unit of Graphics.gridUnits) {
-            if (lineSpace < unit.maxSpace) {
-                this.drawGridSpecificFactor(lineSpace, unit.suffix, unit.disExp);
-                break;
-            }
-        }
+        const lineSpace = (Graphics.gridBreakpoints.find(breakpoint => screenCapacity < breakpoint) || 10000) / 10;
+        const unit = Graphics.gridUnits.find(unit => lineSpace < unit.maxSpace)!;
+        this.drawGridSpecificFactor(lineSpace, unit.suffix, unit.disExp);
 
         this.drawLineRaw(v2(this.x(0), 0), v2(this.x(0), this.canvas.height), {
             strokeStyle: "#000",

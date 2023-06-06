@@ -46,7 +46,7 @@ export class Cannon implements SimulationObject {
 
             graphics.drawTopPointStats(top, topTime)
             graphics.drawEndPointStats(end, top, endTime)
-            graphics.drawFunctionInInterval(v2(0, 0), 0, end.x, (x) => 0.5 * -acceleration * (x / startSpeed.x) ** 2 + (x / startSpeed.x) * startSpeed.y + height);
+            graphics.drawFunctionInInterval(v2(0, 0), 0, end.x, height, (x) => 0.5 * -acceleration * (x / startSpeed.x) ** 2 + (x / startSpeed.x) * startSpeed.y + height);
         }
     }
 

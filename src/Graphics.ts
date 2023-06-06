@@ -356,23 +356,25 @@ export class Graphics {
         this.context.strokeStyle = color;
         this.context.lineWidth = 2;
         this.context.beginPath();
-        this.drawLineRawNoPath(v2(this.x(pos.x), this.y(pos.y + height)), v2(this.x(pos.x) + 100, this.y(pos.y + height)))
+        this.context.moveTo(this.x(pos.x), this.y(pos.y + height))
+        this.context.lineTo(this.x(pos.x) + 100, this.y(pos.y + height))
         this.context.moveTo(this.x(pos.x), this.y(pos.y + height))
         this.context.arc(this.x(pos.x), this.y(pos.y + height), 100, Math.PI * 1.5 + angle - Math.PI * 2, 0)
+        this.context.lineTo(this.x(pos.x), this.y(pos.y + height))
         this.context.stroke();
         this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y + height) + 15), `${(-angle / Math.PI * 180 + 90).toFixed(1)}°`, { fillStyle: color, textAlign: "left" })
         if (startSpeed)
             this.drawTextRaw(v2(this.x(pos.x) + 100, this.y(pos.y + height) + 35), `${startSpeed.toFixed(1)} m/s`, { fillStyle: color, textAlign: "left" })
     }
 
-    public drawFunctionInInterval(pos: Vector2d<Meters>, beginX: Meters, endX: Meters, f: (x: Meters) => Meters) {
+    public drawFunctionInInterval(pos: Vector2d<Meters>, beginX: Meters, endX: Meters, height: Meters, f: (x: Meters) => Meters) {
         const color = "#bf3100";
         const x0 = Math.min(this.tm.simulationToScreenX(beginX), this.tm.simulationToScreenX(endX))
         const x1 = Math.max(this.tm.simulationToScreenX(beginX), this.tm.simulationToScreenX(endX))
         this.context.beginPath();
         this.context.strokeStyle = color;
         this.context.lineWidth = 2;
-        this.context.moveTo(x0, this.y(pos.y));
+        this.context.moveTo(x0, this.y(pos.y + height));
         for (let x = x0; x < x1; ++x) {
             const y = f(this.tm.screenToSimulationX(x));
             this.context.lineTo(

@@ -6,7 +6,7 @@ export class Objects implements ObjectsAdderAndRemover {
     private addQueue: SimulationObject[] = [];
     private objects: SimulationObject[] = [];
 
-    constructor() {}
+    constructor() { }
 
     public add(object: SimulationObject) {
         this.addQueue.push(object);
@@ -25,6 +25,13 @@ export class Objects implements ObjectsAdderAndRemover {
             (existingObject) => existingObject !== object,
         );
         object.destructor ? object.destructor() : undefined;
+    }
+
+    public removeWhere(predicate: (o: SimulationObject) => boolean) {
+        const objects = [...this.objects]
+        for (const o of objects)
+            if (predicate(o))
+                this.remove(o);
     }
 
     public update(deltaT: number) {

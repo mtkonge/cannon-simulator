@@ -1,4 +1,5 @@
 import { Cannon } from "./Cannon";
+import { Cannonball } from "./Cannonball";
 import { CanvasInput } from "./CanvasInput";
 import { ExperimentCannonProfile } from "./ExperimentCannonProfile";
 import { Graphics } from "./Graphics";
@@ -20,6 +21,10 @@ function main() {
         new Cannon(new Vector2d(0, 0), simulationObjects, profile, input),
     );
     simulationObjects.flushAddQueue();
+
+    document.querySelector<HTMLButtonElement>("#delete-balls")?.addEventListener("click", () => {
+        simulationObjects.removeWhere((o) => o instanceof Cannonball)
+    })
 
     const simulationIteration = (before: number) => {
         const now = Date.now();
